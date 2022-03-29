@@ -1,24 +1,24 @@
-# TK-harjoitustyo
-Tietokantaohjelmoinnin harjoitustyö (Ryhmätyö - Group F).
-Tehdään tehtävälista - appi.
+# Tietokantaohjelmoinnin harjoitustyö (Group F)
 
-Vaatimukset:
+Tehdään tehtävälista -appi.
 
-Sovelluksen tulee käyttää tietokantaa. Voitte halutessanne käyttää tietokannan suunnittelu -osiossa suunnittelemaanne tietokantaa tai jotain toista. 
+## Vaatimukset:
 
-Tietokannassa tulee olla vähintään kolme taulua. 
+* Sovelluksen tulee käyttää tietokantaa. Voitte halutessanne käyttää tietokannan suunnittelu -osiossa suunnittelemaanne tietokantaa tai jotain toista. 
 
-Sovelluksessa tulee olla kaikki perus CRUD-toiminnallisuudet toteutettuna. 
+* Tietokannassa tulee olla vähintään kolme taulua. 
 
-Tietokantaoperaatioissa tulee käyttää transaktioita.
+* Sovelluksessa tulee olla kaikki perus CRUD-toiminnallisuudet (Create, Read, Update, Delete) toteutettuna. 
 
-Sovelluksessa tulee olla käyttöliittymä.
+* Tietokantaoperaatioissa tulee käyttää transaktioita.
 
-Sovelluksen tulee hyödyntää sessioita.
+* Sovelluksessa tulee olla käyttöliittymä.
 
-Tietoturva tulee olla huomioitu.
+* Sovelluksen tulee hyödyntää sessioita.
 
-Sovellus tulee olla julkaistu.
+* Tietoturva tulee olla huomioitu.
+
+* Sovellus tulee olla julkaistu.
 
 Palauta tänne linkit julkaistuun sovellukseesi ja GitHub-repositorioon.
 
