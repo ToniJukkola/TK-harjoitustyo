@@ -11,3 +11,5 @@ Sovelluksen tulee hyödyntää sessioita.
 Tietoturva tulee olla huomioitu.
 Sovellus tulee olla julkaistu.
 Palauta tänne linkit julkaistuun sovellukseesi ja GitHub-repositorioon.
+
+https://moodle.oulu.fi/mod/assign/view.php?id=667992
