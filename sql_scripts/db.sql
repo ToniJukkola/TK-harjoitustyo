@@ -26,7 +26,7 @@ CREATE TABLE task(
 CREATE TABLE person(
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     firstname VARCHAR(50) NOT NULL,
-    lastname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL
 );
 
 -- Category
@@ -42,7 +42,7 @@ CREATE TABLE task_persons(
     CONSTRAINT `fk_taskpersons_task`
     FOREIGN KEY (task_id) REFERENCES task(id),
     CONSTRAINT `fk_taskpersons_person`
-    FOREIGN KEY (person_id) REFERENCES person(id),
+    FOREIGN KEY (person_id) REFERENCES person(id)
 );
 
 
