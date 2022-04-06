@@ -8,20 +8,6 @@ CREATE TABLE project(
     project_name VARCHAR(50) NOT NULL
 );
 
--- Task
-CREATE TABLE task( 
-    id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    task_name VARCHAR(50) NOT NULL,
-    due_date DATE,
-    date_created DATE,
-    date_finished DATE,
-    priority_level SMALLINT,
-    category_id SMALLINT,
-    project_id SMALLINT, 
-    CONSTRAINT 'fk_cat_id' FOREIGN KEY (category_id) REFERENCES category(id),
-    CONSTRAINT 'fk_cat_id' FOREIGN KEY (project_id) REFERENCES project(id)
-);
-
 -- Person
 CREATE TABLE person(
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -35,6 +21,20 @@ CREATE TABLE category(
     category_name VARCHAR(50) NOT NULL
 );
 
+-- Task
+CREATE TABLE task( 
+    id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    task_name VARCHAR(50) NOT NULL,
+    due_date DATE,
+    date_created DATE,
+    date_finished DATE,
+    priority_level SMALLINT,
+    category_id SMALLINT,
+    project_id SMALLINT, 
+    CONSTRAINT `fk_cat_id` FOREIGN KEY (category_id) REFERENCES category(id),
+    CONSTRAINT `fk_project_id` FOREIGN KEY (project_id) REFERENCES project(id)
+);
+
 -- Task_persons
 CREATE TABLE task_persons(
     person_id SMALLINT NOT NULL,
@@ -44,5 +44,3 @@ CREATE TABLE task_persons(
     CONSTRAINT `fk_taskpersons_person`
     FOREIGN KEY (person_id) REFERENCES person(id)
 );
-
-
