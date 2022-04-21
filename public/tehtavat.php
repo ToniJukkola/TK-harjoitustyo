@@ -9,16 +9,23 @@ include_once(MODULES_DIR . "tehtavat.php");
         <thead>
             <th>Tehtävä</th>
             <th>Deadline</th>
-            <th>Projekti</h>
+            <th>Projekti</th>
+            <th>Tyypit</th>
         </thead>
         <tbody>
             <?php
             $tasks = getTasks();
             foreach ($tasks as $task) {
+                $assignees = getTaskPeople($task["task_id"]);
                 echo '<tr>';
                 echo '<td>' . $task["task_name"] . '</td>';
                 echo '<td>' . $task["due_date"] . '</td>';
                 echo '<td>' . $task["project_name"] . '</td>';
+                echo '<td><ul>';
+                foreach ($assignees as $assignee) {
+                    echo '<li>' . $assignee["firstname"] . ' ' . $assignee["lastname"][0] . '.</li>';
+                }
+                echo '</ul></td>';
                 echo '</tr>';
             }
             ?>

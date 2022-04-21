@@ -37,3 +37,9 @@ footer {
 .task-table th {
     background: #eee;
 }
+
+.task-table ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
