@@ -23,6 +23,11 @@ footer {
     padding: .5em;
 }
 
+input[type=submit], button {
+    padding: .25em .5em;
+    cursor: pointer;
+}
+
 /* TEHTÄVÄLISTA */
 
 table {
