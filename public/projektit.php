@@ -1,9 +1,14 @@
 <?php
-include_once("../src/templates/head.php")
-?>
+include_once TEMPLATES_DIR.'head.php';
+include_once MODULES_DIR.'projektit.php';
 
-<main>Projektit</main>
+echo "<main>";
+$projects = getProjects();
+echo "<ul>";
+foreach($projects as $p){
+    echo "<li>".$p["id"]." ".$p["project_name"]."</li>";
+}
+echo "</ul>";
+echo "</main>";
 
-<?php
-include_once("../src/templates/foot.php")
-?>
+include_once TEMPLATES_DIR.'foot.php';
