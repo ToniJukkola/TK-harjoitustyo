@@ -7,7 +7,7 @@ try {
   $pdo = connectToLocalhost();
 
   // Create database
-  $sql = "DROP DATABASE IF EXISTS todo2022; CREATE DATABASE todo2022;";
+  $sql = "DROP DATABASE IF EXISTS todo; CREATE DATABASE todo;";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
 
