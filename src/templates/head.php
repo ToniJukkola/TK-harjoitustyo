@@ -15,9 +15,10 @@
         <nav>
             <ul>
                 <li><a href="index.php">Etusivu</a></li>
-                <li><a href="tyypit.php">Tyypit</a></li>
+                <li><a href="tyypit.php">Henkilöt</a></li>
                 <li><a href="projektit.php">Projektit</a></li>
                 <li><a href="tehtavat.php">Tehtävät</a></li>
+                <li><a href="tietoa.php">Tietoa</a></li>
                 <li><a href="kirjaudu.php">Kirjaudu / rekisteröidy</a></li>
             </ul>
         </nav>
