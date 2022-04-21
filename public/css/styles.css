@@ -25,20 +25,20 @@ footer {
 
 /* TEHTÄVÄLISTA */
 
-.task-table {
+table {
     text-align: left;
 }
 
-.task-table th, .task-table td {
+table th, table td {
     padding: .5em;
     border: 1px solid #bbb;
 }
 
-.task-table th {
+table th {
     background: #eee;
 }
 
-.task-table ul {
+table ul {
     list-style: none;
     margin: 0;
     padding: 0;
