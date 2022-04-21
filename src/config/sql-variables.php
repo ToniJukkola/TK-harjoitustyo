@@ -1,9 +1,6 @@
-DROP DATABASE IF EXISTS TODO;
-CREATE DATABASE TODO2022;
+<?php
 
--- Project
-DROP TABLE IF EXISTS project;
-CREATE TABLE project(
+$tablesSQL = 'CREATE TABLE project(
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     project_name VARCHAR(50) NOT NULL
 );
@@ -17,12 +14,6 @@ CREATE TABLE person(
     password VARCHAR(150)
 );
 
-/* -- Category
-CREATE TABLE category(
-    id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    category_name VARCHAR(50) NOT NULL
-); */
-
 -- Task
 CREATE TABLE task( 
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -32,8 +23,6 @@ CREATE TABLE task(
     date_finished DATE,
     priority_level SMALLINT,
     project_id SMALLINT, 
-    project_id SMALLINT, 
-    /* CONSTRAINT `fk_cat_id` FOREIGN KEY (category_id) REFERENCES category(id), */
     CONSTRAINT `fk_project_id` FOREIGN KEY (project_id) REFERENCES project(id)
 );
 
@@ -45,4 +34,4 @@ CREATE TABLE task_persons(
     FOREIGN KEY (task_id) REFERENCES task(id),
     CONSTRAINT `fk_taskpersons_person`
     FOREIGN KEY (person_id) REFERENCES person(id)
-);
+);';
