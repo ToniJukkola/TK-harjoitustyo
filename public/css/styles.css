@@ -43,3 +43,9 @@ table ul {
     margin: 0;
     padding: 0;
 }
+
+td.task-edit {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+}

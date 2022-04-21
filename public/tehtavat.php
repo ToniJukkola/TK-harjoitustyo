@@ -5,12 +5,13 @@ include_once(MODULES_DIR . "tehtavat.php");
 
 <main>
 
-    <table class="task-table">
+    <table>
         <thead>
             <th>Tehtävä</th>
             <th>Deadline</th>
             <th>Projekti</th>
             <th>Tyypit</th>
+            <th>Hallitse</th>
         </thead>
         <tbody>
             <?php
@@ -26,6 +27,9 @@ include_once(MODULES_DIR . "tehtavat.php");
                     echo '<li>' . $assignee["firstname"] . ' ' . $assignee["lastname"][0] . '.</li>';
                 }
                 echo '</ul></td>';
+                echo '<td class="task-edit">
+                <button>Muokkaa</button>
+                <button>Poista</button></td>';
                 echo '</tr>';
             }
             ?>

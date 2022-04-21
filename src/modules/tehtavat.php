@@ -33,3 +33,7 @@ function getTaskPeople($task_id)
         throw $e;
     }
 }
+
+function deleteTask($task_id) {
+    
+}
