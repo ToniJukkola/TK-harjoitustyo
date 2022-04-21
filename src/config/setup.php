@@ -3,22 +3,23 @@ require_once("dbconn.php");
 require_once("sql-variables.php");
 
 try {
-  // Connect to localhost
+  // Yhdistää localhostiin
   $pdo = connectToLocalhost();
 
-  // Create database
+  // Luo tietokannan
   $sql = "DROP DATABASE IF EXISTS todo; CREATE DATABASE todo;";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
 
-  // Connect to the newly created database
+  // Yhdistää juuri luotuun
   $pdo = connectToDatabase();
 
-  // Array for queries
+  // Taulukko sql-lauseille
   $queries = array();
 
-  // Create tables
+  // Työnnetään sql-variables.php:n sql-lauseet taulukkoon
   array_push($queries, $tablesSQL);
+  array_push($queries, $dummydata);
 
   // Execute queries
   foreach ($queries as $query) {
