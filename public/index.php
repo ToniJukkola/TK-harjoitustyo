@@ -1,1 +1,9 @@
-<h1>todo lista VAMOSSSSSSSSS</h1>
+<?php
+include_once("../src/templates/head.php")
+?>
+
+<main>CONTENT</main>
+
+<?php
+include_once("../src/templates/foot.php")
+?>
