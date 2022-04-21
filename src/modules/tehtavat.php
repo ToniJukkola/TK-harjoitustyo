@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Hakee kaikki tehtävät
+ */
 function getTasks()
 {
     require_once CONFIG_DIR . 'dbconn.php';
@@ -15,7 +18,11 @@ function getTasks()
     }
 }
 
-function getSingleTask($task_id) {
+/**
+ * Hakee yksittäisen tehtävän tehtävän id:n perusteella
+ */
+function getSingleTask($task_id)
+{
     require_once CONFIG_DIR . 'dbconn.php';
 
     try {
@@ -32,6 +39,9 @@ function getSingleTask($task_id) {
     }
 }
 
+/**
+ * Hakee tehtävään kiinnitetyt henkilöt tehtävän id:n perusteella
+ */
 function getTaskPeople($task_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
@@ -51,6 +61,29 @@ function getTaskPeople($task_id)
     }
 }
 
+/**
+ * Hakee task_persons-taulusta rivin, joka vastaa parametreina annettua henkilön id:tä ja tehtävän id:tä
+ */
+function getTaskPersonsRowByPersonAndTask($person_id, $task_id)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+
+    try {
+        $pdo = connectToDatabase();
+        $sql = "SELECT * FROM task_persons WHERE person_id = ? AND task_id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $person_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $task_id, PDO::PARAM_INT);
+        $statement->execute();
+        return $statement->fetchAll();
+    } catch (PDOException $e) {
+        throw $e;
+    }
+}
+
+/** 
+ * Poistaa tehtävän
+ */
 function deleteTask($task_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
@@ -82,12 +115,19 @@ function deleteTask($task_id)
     }
 }
 
+/**
+ * Muokkaa tehtävää
+ */
 function editTask($task_id, $task_name, $due_date, $project_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
+    require_once MODULES_DIR . 'tyypit.php';
 
     try {
         $pdo = connectToDatabase();
+        $pdo->beginTransaction();
+
+        // Päivitetään nimi, deadline ja projekti
         $sql = "UPDATE task
         SET task_name = ?, due_date = ?, project_id = ?
         WHERE id = ?";
@@ -97,7 +137,35 @@ function editTask($task_id, $task_name, $due_date, $project_id)
         $statement->bindParam(3, $project_id, PDO::PARAM_INT);
         $statement->bindParam(4, $task_id, PDO::PARAM_INT);
         $statement->execute();
+
+        // Haetaan kaikki henkilöt ja loopataan läpi
+        $people = getPerson();
+        foreach ($people as $person) {
+            // Jos henkilö vastaava checkbox ei ole checked -> poistetaan henkilöä vastaava tehtävärivi task_personsista
+            $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-tyypit.php) namea vastaavan muuttuja luominen
+            if (!isset($_POST[$checkboxname])) {
+                $sql = "DELETE FROM task_persons WHERE task_id = ? AND person_id = ?;";
+                $statement = $pdo->prepare($sql);
+                $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+                $statement->bindParam(2, $person["id"], PDO::PARAM_INT);
+                $statement->execute();
+            } else { // Jos checkbox on valittu
+                // Haetaan task_persons-taulun rivit, jotka vastaavat tehtävän ja henkilön id:tä
+                $taskrows = getTaskPersonsRowByPersonAndTask($person["id"], $task_id);
+                // Jos ei vielä ole olemassa tehtävän ja henkilön muodostamaa riviä, luodaan sellainen
+                if (count($taskrows) <= 0) {
+                    $sql = "INSERT INTO task_persons VALUES (?, ?);";
+                    $statement = $pdo->prepare($sql);
+                    $statement->bindParam(1, $_POST[$checkboxname], PDO::PARAM_INT);
+                    $statement->bindParam(2, $task_id, PDO::PARAM_INT);
+                    $statement->execute();
+                }
+            }
+        }
+
+        $pdo->commit();
     } catch (PDOException $e) {
+        $pdo->rollBack();
         throw $e;
     }
 }

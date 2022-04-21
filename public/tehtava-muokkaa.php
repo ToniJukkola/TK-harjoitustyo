@@ -2,11 +2,13 @@
 include_once(TEMPLATES_DIR . "head.php");
 include_once(MODULES_DIR . "tehtavat.php");
 include_once(TEMPLATES_DIR . "dropdown-projektit.php");
+include_once(TEMPLATES_DIR . "checkbox-tyypit.php");
 
 $task_id = $_GET["id"];
 $task = getSingleTask($task_id);
 $project_id = $task["project_id"];
 $showForm = $_GET["state"];
+$taskpeople = getTaskPeople($task_id);
 ?>
 
 <main>
@@ -28,16 +30,23 @@ $showForm = $_GET["state"];
         <label for="project">Projekti:</label>
         <?php createProjectsDropdown($project_id) ?>
       </div>
+      <div>
+        <label for="people">Henkilöt:</label>
+        <?php createPeopleCheckboxList($taskpeople) ?>
+      </div>
       <input type="submit" value="Hyväksy muutokset">
     </form>
 
   <?php } ?>
 
   <?php
+
+  // Haetaan lomakkeen inputien arvot muuttujiin
   $task_name = filter_input(INPUT_POST, "task_name");
   $due_date = filter_input(INPUT_POST, "due_date");
   $project_id = filter_input(INPUT_POST, "project");
 
+  // Jos arvot asetettu, kutsutaan muokkausfunktiota
   if (isset($task_name) && isset($due_date) && isset($project_id)) {
 
     try {

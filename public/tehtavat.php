@@ -22,6 +22,15 @@ include_once(TEMPLATES_DIR . "tehtavarivit-tauluun.php");
         </tbody>
     </table>
 
+    <h3>To do</h3>
+    <ul>
+        <li>Validoinnit, checkit, virheilmoitukset</li>
+        <li>Jos tehtävään ei ole kiinnitetty henkilöitä -> muokkaussivu herjaa. 
+            <ul><li>Tälle joko checkit tms. TAI pidetään sääntönä että tehtävällä on aina oltava vähintään yksi kiinnitetty tekijä</li></ul>
+        </li>
+        <li>Uuden tehtävän lisääminen</li>
+    </ul>
+
 </main>
 
 <?php
