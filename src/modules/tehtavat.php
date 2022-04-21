@@ -55,6 +55,10 @@ function deleteTask($task_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
 
+    if (!isset($task_id)) {
+        throw new Exception("Virhe poistettavan tehtävän id:n noutamisessa.");
+    }
+
     try {
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
@@ -78,20 +82,20 @@ function deleteTask($task_id)
     }
 }
 
-
-function editTask($task_id, $task_name, $due_date)
+function editTask($task_id, $task_name, $due_date, $project_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
 
     try {
         $pdo = connectToDatabase();
         $sql = "UPDATE task
-        SET task_name = ?, due_date = ?
+        SET task_name = ?, due_date = ?, project_id = ?
         WHERE id = ?";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_name, PDO::PARAM_STR);
         $statement->bindParam(2, $due_date, PDO::PARAM_STR);
-        $statement->bindParam(3, $task_id, PDO::PARAM_INT);
+        $statement->bindParam(3, $project_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $task_id, PDO::PARAM_INT);
         $statement->execute();
     } catch (PDOException $e) {
         throw $e;

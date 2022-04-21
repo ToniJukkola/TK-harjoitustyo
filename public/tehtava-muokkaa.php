@@ -1,61 +1,59 @@
 <?php
 include_once(TEMPLATES_DIR . "head.php");
 include_once(MODULES_DIR . "tehtavat.php");
+include_once(TEMPLATES_DIR . "dropdown-projektit.php");
 
 $task_id = $_GET["id"];
 $task = getSingleTask($task_id);
+$project_id = $task["project_id"];
 $showForm = $_GET["state"];
 ?>
 
 <main>
 
-<?php if ($showForm != "success") { ?>
+  <?php if ($showForm != "success") { ?>
 
-  <h2>Muokkaa tehtävää #<?php echo $task_id ?></h2>
+    <h2>Muokkaa tehtävää #<?php echo $task_id ?></h2>
 
-  <form class="form-task" action="tehtava-muokkaa.php?id=<?php echo $task_id ?>&state=success" method="post">
-    <div>
-      <label for="task_name">Tehtävän nimi:</label>
-      <input type="text" name="task_name" value="<?php echo $task['task_name'] ?>">
-    </div>
-    <div>
-      <label for="due_date">Deadline:</label>
-      <input type="date" name="due_date" value="<?php echo $task['due_date'] ?>">
-    </div>
-    <!-- <div>
-      <label for="project">Projekti:</label>
-      <select name="project">
-        <option value="">Vaihtoehto</option>
-        <option value="">Vaihtoehto</option>
-        <option value="">Vaihtoehto</option>
-      </select>
-    </div>
-    <div>
-      <label for="task_persons">Tyypit:</label>
-    </div> -->
-    <input type="submit" value="Hyväksy muutokset">
-  </form>
+    <form class="form-task" action="tehtava-muokkaa.php?id=<?php echo $task_id ?>&state=success" method="post">
+      <div>
+        <label for="task_name">Tehtävän nimi:</label>
+        <input type="text" name="task_name" value="<?php echo $task['task_name'] ?>">
+      </div>
+      <div>
+        <label for="due_date">Deadline:</label>
+        <input type="date" name="due_date" value="<?php echo $task['due_date'] ?>">
+      </div>
+      <div>
+        <label for="project">Projekti:</label>
+        <?php createProjectsDropdown($project_id) ?>
+      </div>
+      <input type="submit" value="Hyväksy muutokset">
+    </form>
 
   <?php } ?>
 
   <?php
   $task_name = filter_input(INPUT_POST, "task_name");
   $due_date = filter_input(INPUT_POST, "due_date");
-  
-  if (isset($task_name) && isset($due_date)) {
-  
+  $project_id = filter_input(INPUT_POST, "project");
+
+  if (isset($task_name) && isset($due_date) && isset($project_id)) {
+
     try {
-      editTask($task_id, $task_name, $due_date);
-      echo ("Success!");
-      echo '
-          <div style="margin-top: 2em;">
-            <a href="tehtavat.php"><button>Takaisin tehtävälistaukseen</button></a>
-          </div>';
+      editTask($task_id, $task_name, $due_date, $project_id);
+      echo '<div class="alert alert-success">';
+      echo "Muokattu onnistuneesti tehtävää <strong>#" . $task_id . '</strong>';
+      echo '</div>';
     } catch (Exception $pdoex) {
-      echo '<div class="alert">' . $pdoex->getMessage() . '</div>';
+      echo '<div class="alert alert-fail">' . $pdoex->getMessage() . '</div>';
     }
   }
   ?>
+
+  <div style="margin-top: 2em;">
+    <a href="tehtavat.php"><button>Takaisin tehtävälistaukseen</button></a>
+  </div>
 
 </main>
 

@@ -7,12 +7,12 @@ include_once(TEMPLATES_DIR . "tehtavarivit-tauluun.php");
 
 <h2>Tehtävälista</h2>
 
-    <table>
+    <table class="task-table">
         <thead>
             <th>Tehtävä</th>
             <th>Deadline</th>
             <th>Projekti</th>
-            <th>Tyypit</th>
+            <th>Henkilöt</th>
             <th>Hallitse</th>
         </thead>
         <tbody>
