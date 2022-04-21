@@ -6,10 +6,27 @@ function getTasks()
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date, date_created, date_finished, priority_level, project_name FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, priority_level, project_name FROM task
         LEFT JOIN project ON project.id = task.project_id";
         $tasks = $pdo->query($sql);
         return $tasks->fetchAll();
+    } catch (PDOException $e) {
+        throw $e;
+    }
+}
+
+function getSingleTask($task_id) {
+    require_once CONFIG_DIR . 'dbconn.php';
+
+    try {
+        $pdo = connectToDatabase();
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, priority_level, project_name, project_id FROM task
+        LEFT JOIN project ON project.id = task.project_id
+        WHERE task.id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+        $statement->execute();
+        return $statement->fetch();
     } catch (PDOException $e) {
         throw $e;
     }
@@ -38,10 +55,6 @@ function deleteTask($task_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
 
-    // if (!isset($is_completed)) {
-    //     throw new Exception("Tehtävää ei ole merkitty tehdyksi");
-    // }
-
     try {
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
@@ -61,6 +74,26 @@ function deleteTask($task_id)
         $pdo->commit();
     } catch (PDOException $e) {
         $pdo->rollBack();
+        throw $e;
+    }
+}
+
+
+function editTask($task_id, $task_name, $due_date)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+
+    try {
+        $pdo = connectToDatabase();
+        $sql = "UPDATE task
+        SET task_name = ?, due_date = ?
+        WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_name, PDO::PARAM_STR);
+        $statement->bindParam(2, $due_date, PDO::PARAM_STR);
+        $statement->bindParam(3, $task_id, PDO::PARAM_INT);
+        $statement->execute();
+    } catch (PDOException $e) {
         throw $e;
     }
 }

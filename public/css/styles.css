@@ -18,14 +18,37 @@ nav > ul {
     justify-content: center;
 }
 
+main {
+    align-self: start;
+}
+
 footer {
     border: 1px solid #bbb;
     padding: .5em;
 }
 
-input[type=submit], button {
+
+/* FORMIT */
+
+label {
+    padding: .25em 0;
+}
+
+input, button, select, option {
     padding: .25em .5em;
+}
+
+input[type=submit], button {
     cursor: pointer;
+}
+
+.form-task {
+    display: grid;
+    gap: 1em;
+}
+
+.form-task > * {
+    justify-self: start;
 }
 
 /* TEHTÄVÄLISTA */

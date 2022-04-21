@@ -5,6 +5,8 @@ include_once(TEMPLATES_DIR . "tehtavarivit-tauluun.php");
 
 <main>
 
+<h2>Tehtävälista</h2>
+
     <table>
         <thead>
             <th>Tehtävä</th>
