@@ -1,4 +1,4 @@
-<footer>&copy; Tiina Pelimanni, Toni Jukkola, Aleksi Viitanen, Kasperi Viitala 2022</footer>
+<footer>&copy; Tiina Pelimanni, Toni Jukkola, Aleksi Viitanen, Kasperi Vaarala 2022</footer>
 
 </body>
 
