@@ -19,7 +19,7 @@ CREATE TABLE task(
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     task_name VARCHAR(50) NOT NULL,
     due_date DATE,
-    date_created DATE,
+    date_created DATE DEFAULT CURRENT_DATE,
     date_finished DATE,
     priority_level SMALLINT,
     project_id SMALLINT, 
