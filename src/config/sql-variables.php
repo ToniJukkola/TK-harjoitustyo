@@ -21,7 +21,7 @@ CREATE TABLE task(
     due_date DATE,
     date_created DATE DEFAULT CURRENT_DATE,
     date_finished DATE,
-    priority_level SMALLINT,
+    priority_level SMALLINT DEFAULT 1,
     project_id SMALLINT, 
     CONSTRAINT `fk_project_id` FOREIGN KEY (project_id) REFERENCES project(id)
 );
