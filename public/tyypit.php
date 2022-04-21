@@ -4,8 +4,6 @@ require_once MODULES_DIR.'tyypit.php';
 ?>
 
 <main>
-
-<button><a href="index.php">Etusivulle</a></button>
     
     <?php
     // Get all people from database
