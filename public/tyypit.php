@@ -4,17 +4,18 @@ require_once MODULES_DIR.'tyypit.php';
 ?>
 
 <main>
-    
-    <?php
-    // Get all people from database
-    $person = getPerson();
-    // Print person list
-    echo "<ul><h2>Henkilöt</h2>";
-    foreach($person as $p){
-        echo "<li><h3>".$p["id"]." ".$p["firstname"]." ".$p["lastname"]."</h3></li>";
-    }
-        echo "</ul>";
-    ?>
+<?php
+// Get all people from database
+$person = getPerson();
+// Print person list
+echo "<table>";
+echo "<h2>Henkilöt</h2>";
+echo "<thead><th>ID</th><th>Käyttäjänimi</th><th>Etunimi</th><th>Sukunimi</th><th>Muokkaa/Poista</th></thead>";
+foreach($person as $p){
+    echo "<tbody><tr><td>".$p["id"]." </td><td>".$p["username"]." </td><td>".$p["firstname"]." </td><td>".$p["lastname"]."</td><td><button>Poista</button><button>Muokkaa</button></td></tr></tbody>";
+}
+    echo "</table>";
+?>
 </main>
 
 <?php
