@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +25,7 @@
                 if(!isset($_SESSION["username"])) {
                     echo '<li><a href="kirjaudu.php">Kirjaudu / rekisteröidy</a></li>';
                 } else {
-                    echo '<li>'.$_SESSION["firstname"] . ' ' . $_SESSION["firstname"] . ' ' . '(<a href="kirjaudu.php">Kirjaudu ulos</a>)</li>';
+                    echo '<li>'.$_SESSION["firstname"] . ' ' . $_SESSION["lastname"] . ' ' . '(<a href="kirjaudu.php">Kirjaudu ulos</a>)</li>';
                 }
                 ?>
             </ul>
