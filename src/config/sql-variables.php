@@ -8,6 +8,7 @@ $tablesSQL = 'CREATE TABLE project(
 -- Person
 CREATE TABLE person(
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     firstname VARCHAR(50) NOT NULL,
     lastname VARCHAR(50) NOT NULL,
@@ -41,10 +42,10 @@ $dummydata = 'INSERT INTO project (project_name) VALUES
 ("Verkkokauppasovellus React + tietokanta"),
 ("IT Presentation");
 
-INSERT INTO person (email, firstname, lastname) VALUES 
-("matti@ja.fi", "Matti", "Meikäläinen"),
-("teppo@ja.fi", "Teppo", "Ruohonen"),
-("maija@pesa.fi", "Maija", "Mehiläinen");
+INSERT INTO person (username, email, firstname, lastname) VALUES 
+("matti", "matti49@luukku.com", "Matti", "Meikäläinen"),
+("teppo", "teppo48@luukku.com", "Teppo", "Ruohonen"),
+("maija", "maija.mehi@pesa.fi", "Maija", "Mehiläinen");
 
 INSERT INTO task (task_name, project_id, due_date) VALUES
 ("Tietokannan suunnittelu", 1, "2022-04-03"),
