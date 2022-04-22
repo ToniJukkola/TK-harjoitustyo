@@ -49,9 +49,12 @@ INSERT INTO person (username, firstname, lastname) VALUES
 
 INSERT INTO task (task_name, project_id, due_date) VALUES
 ("Tietokannan suunnittelu", 1, "2022-04-03"),
-("Tietokannan suunnittelu", 2, "2022-04-01"),
+("SQL-luontilauseet", 2, "2022-04-01"),
 ("React-appin luonti", 2, "2022-04-05"),
-("Aiheen valinta", 3, "2022-04-05");
+("Aiheen valinta", 3, "2022-04-05"),
+("Valmis tehtävä", 1, "2022-04-05");
+
+UPDATE task SET date_finished = "2022-03-29" WHERE id = 5;
 
 INSERT INTO task_persons (task_id, person_id) VALUES
 (1, 1),
