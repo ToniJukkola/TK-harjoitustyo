@@ -89,13 +89,15 @@ input[type=submit], button {
     cursor: pointer;
 }
 
-.form-task {
+form {
     display: grid;
     gap: 1em;
 }
 
-.form-task > * {
+form > div, form > input[type=submit] {
+    display: grid;
     justify-self: start;
+
 }
 
 /* TEHTÄVÄLISTA */
