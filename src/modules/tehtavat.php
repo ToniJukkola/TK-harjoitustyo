@@ -122,6 +122,19 @@ function editTask($task_id, $task_name, $due_date, $project_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'tyypit.php';
+    
+    // Tarkistetaan, että arvot on asetettu
+    if (!isset($task_name) || !isset($due_date) || !isset($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään<ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
+
+    // Tarkistetaan, etteivät arvot ole tyhjiä
+    if (empty($task_name) || empty($due_date) || empty($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään
+        <ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
 
     try {
         $pdo = connectToDatabase();
@@ -141,7 +154,7 @@ function editTask($task_id, $task_name, $due_date, $project_id)
         $people = getPerson();
         foreach ($people as $person) {
             // Jos henkilö vastaava checkbox ei ole checked -> poistetaan henkilöä vastaava tehtävärivi task_personsista
-            $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-tyypit.php) namea vastaavan muuttuja luominen
+            $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-henkilot.php) namea vastaavan muuttuja luominen
             if (!isset($_POST[$checkboxname])) {
                 $sql = "DELETE FROM task_persons WHERE task_id = ? AND person_id = ?;";
                 $statement = $pdo->prepare($sql);
@@ -172,8 +185,65 @@ function editTask($task_id, $task_name, $due_date, $project_id)
             $statement->bindParam(2, $task_id, PDO::PARAM_INT);
             $statement->execute();
         }
-        
     } catch (PDOException $e) {
+        throw $e;
+    }
+}
+
+/** 
+ * Lisää uuden tehtävän
+ */
+function addTask($task_name, $due_date, $project_id)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+    require_once MODULES_DIR . 'projektit.php';
+    require_once MODULES_DIR . 'tyypit.php';
+
+    // Tarkistetaan, että arvot on asetettu
+    if (!isset($task_name) || !isset($due_date) || !isset($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään<ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
+
+    // Tarkistetaan, etteivät arvot ole tyhjiä
+    if (empty($task_name) || empty($due_date) || empty($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään
+        <ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
+
+    // Lisätään uusi tehtävä kantaan
+    try {
+        $pdo = connectToDatabase();
+        $pdo->beginTransaction();
+
+        // Lisätään tehtävän nimi, deadline ja projekti
+        $sql = "INSERT INTO task (task_name, due_date, project_id) VALUES (?, ?, ?);";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_name, PDO::PARAM_STR);
+        $statement->bindParam(2, $due_date, PDO::PARAM_STR);
+        $statement->bindParam(3, $project_id, PDO::PARAM_INT);
+        $statement->execute();
+        $task_id = $pdo->lastInsertId(); // task_id seuraavaan vaiheeseen
+
+        // Tarkistetaan onko tehtävään liitetty henkilöitä
+        // Haetaan kaikki henkilöt ja loopataan läpi
+        $people = getPerson();
+        foreach ($people as $person) {
+            // Jos henkilö vastaava checkbox on checked, lisätään tehtävärivi task_persons-tauluun
+            $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-henkilot.php) namea vastaavan muuttuja luominen
+            if (isset($_POST[$checkboxname])) {
+                $sql = "INSERT INTO task_persons (task_id, person_id) VALUES (?, ?);";
+                $statement = $pdo->prepare($sql);
+                $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+                $statement->bindParam(2, $person["id"], PDO::PARAM_INT);
+                $statement->execute();
+            }
+        }
+
+        $pdo->commit();
+    } catch (PDOException $e) {
+        $pdo->rollBack();
         throw $e;
     }
 }

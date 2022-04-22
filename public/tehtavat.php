@@ -7,6 +7,9 @@ include_once(TEMPLATES_DIR . "lista-tehtava.php");
 <main>
 
     <h2>Tehtävälista</h2>
+    <div style="display: flex; justify-content: flex-end;">
+    <a href="tehtava-uusi.php"><button>Lisää tehtävä</button></a>
+    </div>
 
     <h3>Keskeneräiset tehtävät</h3>
 

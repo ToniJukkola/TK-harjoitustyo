@@ -1,23 +1,25 @@
 <?php
 include_once(TEMPLATES_DIR . "head.php");
-include_once(MODULES_DIR . "tehtavat.php");
-include_once(TEMPLATES_DIR . "dropdown-projektit.php");
-include_once(TEMPLATES_DIR . "checkbox-henkilot.php");
+require_once(MODULES_DIR . "tehtavat.php");
+require_once(TEMPLATES_DIR . "dropdown-projektit.php");
+require_once(TEMPLATES_DIR . "checkbox-henkilot.php");
 
 $task_id = $_GET["id"];
+if (isset($_GET["state"])) {
+  $showForm = $_GET["state"];
+}
 $task = getSingleTask($task_id);
 $project_id = $task["project_id"];
-$showForm = $_GET["state"];
 $taskpeople = getTaskPeople($task_id);
 ?>
 
 <main>
 
-  <?php if ($showForm != "success") { ?>
+  <?php if (!isset($showForm) || $showForm != "result") { ?>
 
     <h2>Muokkaa tehtävää #<?php echo $task_id ?></h2>
 
-    <form class="form-task" action="tehtava-muokkaa.php?id=<?php echo $task_id ?>&state=success" method="post">
+    <form class="form-task" action="tehtava-muokkaa.php?id=<?php echo $task_id ?>&state=result" method="post">
       <div>
         <label for="task_name">Tehtävän nimi:</label>
         <input type="text" name="task_name" value="<?php echo $task['task_name'] ?>">
@@ -54,16 +56,22 @@ $taskpeople = getTaskPeople($task_id);
   $due_date = filter_input(INPUT_POST, "due_date");
   $project_id = filter_input(INPUT_POST, "project");
 
-  // Jos arvot asetettu, kutsutaan muokkausfunktiota
+  // Tarkistetaan, että arvot on asetettu
   if (isset($task_name) && isset($due_date) && isset($project_id)) {
 
     try {
       editTask($task_id, $task_name, $due_date, $project_id);
+      $submitOK = true;
       echo '<div class="alert alert-success">';
-      echo "Muokattu onnistuneesti tehtävää <strong>#" . $task_id . '</strong>';
+      echo 'Muokattu onnistuneesti tehtävää <strong>#' . $task_id . '</strong>';
       echo '</div>';
     } catch (Exception $pdoex) {
-      echo '<div class="alert alert-fail">' . $pdoex->getMessage() . '</div>';
+      $showForm = "";
+      echo '<div class="alert alert-fail">Tehtävän <strong>#' . $task_id . '</strong> muokkaaminen epäonnistui.<br><br>' . $pdoex->getMessage() . '</div>';
+      echo '
+      <div style="margin-top: 2em;">
+        <a href="tehtava-muokkaa.php?id=' . $task_id . '&state=edit"><button>Takaisin tehtävän #' . $task_id . ' muokkaukseen</button></a>
+      </div>';
     }
   }
   ?>
