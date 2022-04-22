@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ryhmätyömanageri</title>
     <link rel="stylesheet" href="../public/css/styles.css">
+    <link rel="icon" href="../public/images/favicon-public.png" type="image/png">
 </head>
 
 <body>
