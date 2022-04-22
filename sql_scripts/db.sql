@@ -49,8 +49,9 @@ CREATE TABLE task_persons(
 
 -- Aloitusdataa
 INSERT INTO project (project_name) VALUES
-("CRUD-sovellus php + sql"),
-("Verkkokauppasovellus React + tietokanta"),
+("Muu"),
+("CRUD-sovellus"),
+("Verkkokauppa"),
 ("IT Presentation");
 
 INSERT INTO person (username, email, firstname, lastname) VALUES 
@@ -59,10 +60,10 @@ INSERT INTO person (username, email, firstname, lastname) VALUES
 ("maija", "maija.mehi@pesa.fi", "Maija", "Mehiläinen");
 
 INSERT INTO task (task_name, project_id, due_date) VALUES
-("Tietokannan suunnittelu", 1, "2022-04-03"),
-("SQL-luontilauseet", 2, "2022-04-01"),
-("React-appin luonti", 2, "2022-04-05"),
-("Aiheen valinta", 3, "2022-04-05"),
+("Tietokannan suunnittelu", 2, "2022-04-03"),
+("SQL-luontilauseet", 3, "2022-04-01"),
+("React-appin luonti", 3, "2022-04-05"),
+("Aiheen valinta", 4, "2022-04-05"),
 ("Valmis tehtävä", 1, "2022-04-05");
 
 UPDATE task SET date_finished = "2022-03-29" WHERE id = 5;
@@ -73,5 +74,6 @@ INSERT INTO task_persons (task_id, person_id) VALUES
 (2, 1),
 (2, 2),
 (3, 2),
+(3, 3),
 (4, 2),
 (4, 1);

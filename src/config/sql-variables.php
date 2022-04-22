@@ -1,5 +1,22 @@
 <?php
 
+// Aloitustyypit
+$p1uname = "matti";
+$p1email = "matti49@luukku.com";
+$p1fname = "Matti";
+$p1lname = "Meikäläinen";
+$p1pw = "matti";
+$p2uname = "teppo";
+$p2email = "teppo48@luukku.com";
+$p2fname = "Teppo";
+$p2lname = "Ruohonen";
+$p2pw = "teppo";
+$p3uname = "maija";
+$p3email = "maija.mehi@pesa.fi";
+$p3fname = "Maija";
+$p3lname = "Mehiläinen";
+$p3pw = "maija";
+
 $tablesSQL = 'CREATE TABLE project(
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     project_name VARCHAR(50) NOT NULL
@@ -38,29 +55,26 @@ CREATE TABLE task_persons(
 );';
 
 $dummydata = 'INSERT INTO project (project_name) VALUES
-("CRUD-sovellus php + sql"),
-("Verkkokauppasovellus React + tietokanta"),
+("Muut projektit"),
+("CRUD-sovellus"),
+("Verkkokauppa"),
 ("IT Presentation");
 
-INSERT INTO person (username, email, firstname, lastname) VALUES 
-("matti", "matti49@luukku.com", "Matti", "Meikäläinen"),
-("teppo", "teppo48@luukku.com", "Teppo", "Ruohonen"),
-("maija", "maija.mehi@pesa.fi", "Maija", "Mehiläinen");
-
 INSERT INTO task (task_name, project_id, due_date) VALUES
-("Tietokannan suunnittelu", 1, "2022-04-03"),
-("SQL-luontilauseet", 2, "2022-04-01"),
-("React-appin luonti", 2, "2022-04-05"),
-("Aiheen valinta", 3, "2022-04-05"),
+("Tietokannan suunnittelu", 2, "2022-04-03"),
+("SQL-luontilauseet", 3, "2022-04-01"),
+("React-appin luonti", 3, "2022-04-05"),
+("Aiheen valinta", 4, "2022-04-05"),
 ("Valmis tehtävä", 1, "2022-04-05");
 
 UPDATE task SET date_finished = "2022-03-29" WHERE id = 5;
 
 INSERT INTO task_persons (task_id, person_id) VALUES
 (1, 1),
-(1, 2),
+(1, 3),
 (2, 1),
 (2, 2),
-(3, 2),
+(3, 3),
+(4, 3),
 (4, 2),
 (4, 1)';
