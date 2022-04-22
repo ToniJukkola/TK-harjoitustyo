@@ -45,3 +45,34 @@ function logout(){
         throw $e;
     }
 }
+
+function register($username, $password, $firstName, $lastName) {
+    require_once CONFIG_DIR.'dbconn.php';
+    
+    if( !isset($firstName) || !isset($lastName) || !isset($username) || !isset($password) ){
+        throw new Exception("Missing parameters! Cannot add person!");
+    }
+    
+    if( empty($fname) || empty($lname) || empty($uname) || empty($pw) ){
+        throw new Exception("Cannot set empty values!");
+    }
+    
+    try{
+        $pdo = connectToDatabase();
+        $sql = "INSERT INTO person (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $firstName);
+        $statement->bindParam(2, $lastName);
+        $statement->bindParam(3, $username);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $statement->bindParam(4, $hashed_password);
+        
+    
+        $statement->execute();
+    
+        echo "Oho tähä toimi. Morjensta $firstName $lastName"; 
+    }catch(PDOException $e){
+        throw $e;
+    }
+}
+

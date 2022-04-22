@@ -1,18 +1,39 @@
 <?php
 include_once TEMPLATES_DIR.'head.php';
-include MODULES_DIR.'login.php';
+include_once MODULES_DIR.'account-control.php';
 
-$username = filter_input(INPUT_POST, "email");
+$username = filter_input(INPUT_POST, "username");
 $password = filter_input(INPUT_POST, "password");
+$formType = filter_input(INPUT_POST, "formType");
+$formType = filter_input(INPUT_POST, "firstName");
+$formType = filter_input(INPUT_POST, "formType");
 
-if(!isset($_SESSION["username"]) && isset($username)) {
-
+if(isset($_SESSION["username"])) {
     try {
-        login($username, $password);
-        header("Location: index.php");
-        exit;
+        logout();
     } catch (Exception $e) {
-        echo '<div class="alert alert-danger" role="alert">'.$e->getMessage().'</div>';
+        echo '<div class="alert alert-fail">'.$e->getMessage().'</div>';
+    } 
+}
+
+if(!isset($_SESSION["username"]) && isset($username) && isset($formType)) {
+
+    if ($formType == 0) {
+        try {
+            login($username, $password);
+            header("Location: index.php");
+            exit;
+        } catch (Exception $e) {
+            echo '<div class="alert alert-fail">'.$e->getMessage().'</div>';
+        }
+    } else if ($formType == 1) {
+        try {
+            register($username, $password, $firstName, $lastName);
+            header("Location: index.php");
+            exit;
+        } catch (Exception $e) {
+            echo '<div class="alert alert-fail">'.$e->getMessage().'</div>';
+        }
     }
 }
 
@@ -33,12 +54,9 @@ if(!isset($_SESSION["username"])) {
         <label for="password">Salasana: </label>
         <input id="password" name="password" type="password">
         <button type="submit">Kirjau-u</button>
-        </form>
-
-        <form action="">
         <div>Ei tunnuksii?</div>
         <div>
-            <label for="regPasswordAgain">Salasana uudestaan:DDD : </label><input id="regPasswordAgain" type="password">
+            <label for="regPasswordAgain">Salasana uudestaan :DDD </label><input id="regPasswordAgain" type="password">
         </div>
         <div>
             <label for="firstName">Etunimi: </label><input id="firstName" type="text">
@@ -47,7 +65,7 @@ if(!isset($_SESSION["username"])) {
             <label for="lastName">Sukuloimisnimi: </label><input id="lastName" type="text">
         </div>
         <div>
-            <button>Reggaroi</button>
+            <button type="submit">Reggaroi</button>
         </div>
     </form>
 </main>
