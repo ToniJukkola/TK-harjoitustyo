@@ -1,10 +1,32 @@
 <?php
-function createTaskRows()
+/**
+ * Luo rivit tehtävätaulukkoon
+ * $filter = suodatusperuste
+ * $order = järjestysperuste
+ */
+function createTaskRows($filter = NULL, $order = NULL)
 {
   require_once(MODULES_DIR . "tehtavat.php");
 
+  // Haetaan tehtävät tietokannasta
   $tasks = getTasks();
-  
+
+  if ($order == "deadline") {
+    // Järjestetään tehtävät deadlinen mukaan
+    usort($tasks, fn ($a, $b) => strtotime($a["due_date"]) - strtotime($b["due_date"]));
+  }
+
+  if ($filter == "finished") {
+    // Filtteröidään näkyviin vain valmistuneet tehtävät
+    $tasks = array_filter($tasks, fn ($task) => !is_null($task["date_finished"]));
+  }
+
+  if ($filter == "not_finished") {
+    // Filtteröidään näkyviin vain keskeneräiset tehtävät
+    $tasks = array_filter($tasks, fn ($task) => is_null($task["date_finished"]));
+  }
+
+  // Loopataan järjestetyn tehtävälistan läpi ja luodaan taulurivit
   foreach ($tasks as $task) {
     $assignees = getTaskPeople($task["task_id"]);
     echo '<tr>';

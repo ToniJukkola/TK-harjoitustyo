@@ -9,7 +9,7 @@ function getTasks()
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, priority_level, project_name FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, priority_level, project_name FROM task
         LEFT JOIN project ON project.id = task.project_id";
         $tasks = $pdo->query($sql);
         return $tasks->fetchAll();
@@ -27,7 +27,7 @@ function getSingleTask($task_id)
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, priority_level, project_name, project_id FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, priority_level, project_name, project_id FROM task
         LEFT JOIN project ON project.id = task.project_id
         WHERE task.id = ?";
         $statement = $pdo->prepare($sql);

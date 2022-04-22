@@ -130,6 +130,10 @@ table.task-table {
     width: 100%;
 }
 
+ul.task-list > li {
+    margin: 1em 0;
+}
+
 /* ----- */
 
 .hidden {

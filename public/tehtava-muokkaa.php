@@ -2,7 +2,7 @@
 include_once(TEMPLATES_DIR . "head.php");
 include_once(MODULES_DIR . "tehtavat.php");
 include_once(TEMPLATES_DIR . "dropdown-projektit.php");
-include_once(TEMPLATES_DIR . "checkbox-tyypit.php");
+include_once(TEMPLATES_DIR . "checkbox-henkilot.php");
 
 $task_id = $_GET["id"];
 $task = getSingleTask($task_id);

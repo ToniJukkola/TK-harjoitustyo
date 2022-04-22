@@ -1,11 +1,14 @@
 <?php
 include_once(TEMPLATES_DIR . "head.php");
-include_once(TEMPLATES_DIR . "tehtavarivit-tauluun.php");
+include_once(TEMPLATES_DIR . "taulurivi-tehtava.php");
+include_once(TEMPLATES_DIR . "lista-tehtava.php");
 ?>
 
 <main>
 
-<h2>Tehtävälista</h2>
+    <h2>Tehtävälista</h2>
+
+    <h3>Keskeneräiset tehtävät</h3>
 
     <table class="task-table">
         <thead>
@@ -17,17 +20,17 @@ include_once(TEMPLATES_DIR . "tehtavarivit-tauluun.php");
         </thead>
         <tbody>
             <?php
-            createTaskRows();
+            createTaskRows("not_finished", "deadline");
             ?>
         </tbody>
     </table>
 
-    <h3>To do</h3>
-    <ul>
-        <li>Validoinnit, checkit, virheilmoitukset</li>
-        <li>Uuden tehtävän lisääminen</li>
-        <li>EXTRA: date_finished päivittäminen, jos on jo kerran asetettu?</li>
-        <li>Priority_level: näytetäänkö, muokataanko, jätetäänkö pos kokonaan?</li>
+    <h3>Valmistuneet tehtävät</h3>
+
+    <ul class="task-list">
+        <?php
+        createFinishedTaskList();
+        ?>
     </ul>
 
 </main>
