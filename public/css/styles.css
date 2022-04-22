@@ -89,15 +89,20 @@ input[type=submit], button {
     cursor: pointer;
 }
 
-form {
+form, .register-toggle {
     display: grid;
     gap: 1em;
 }
 
-form > div, form > input[type=submit] {
+form > div, form > input[type=submit], .register-toggle > div {
     display: grid;
     justify-self: start;
+}
 
+.register-toggle button[type=submit] { margin-top: 1em; }
+
+form .alert {
+    display: block;
 }
 
 /* TEHTÄVÄLISTA */
