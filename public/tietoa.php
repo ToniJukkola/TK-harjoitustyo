@@ -1,6 +1,5 @@
 <?php
 include_once(TEMPLATES_DIR . "head.php");
-include_once(TEMPLATES_DIR . "tehtavarivit-tauluun.php");
 ?>
 
 <main>
