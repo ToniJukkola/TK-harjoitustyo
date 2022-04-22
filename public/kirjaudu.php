@@ -11,6 +11,8 @@ $lastName = filter_input(INPUT_POST, "lastName");
 if(isset($_SESSION["username"])) {
     try {
         logout();
+        header("Location: kirjaudu.php");
+        exit;
     } catch (Exception $e) {
         echo '<div class="alert alert-fail">'.$e->getMessage().'</div>';
     } 
@@ -22,6 +24,7 @@ if(!isset($_SESSION["username"]) && isset($username) && isset($formType)) {
         try {
             login($username, $password);
             header("Location: index.php");
+            exit;
         } catch (Exception $e) {
             echo '<div class="alert alert-fail">'.$e->getMessage().'</div>';
         }
