@@ -20,7 +20,13 @@
                 <li><a href="projektit.php">Projektit</a></li>
                 <li><a href="tehtavat.php">Tehtävät</a></li>
                 <li><a href="tietoa.php">Tietoa</a></li>
-                <li><a href="kirjaudu.php">Kirjaudu / rekisteröidy</a></li>
+                <?php
+                if(!isset($_SESSION["username"])) {
+                    echo '<li><a href="kirjaudu.php">Kirjaudu / rekisteröidy</a></li>';
+                } else {
+                    echo '<li>'.$_SESSION["firstname"] . ' ' . $_SESSION["firstname"] . ' ' . '(<a href="kirjaudu.php">Kirjaudu ulos</a>)</li>';
+                }
+                ?>
             </ul>
         </nav>
     </header>
