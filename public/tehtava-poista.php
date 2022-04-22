@@ -9,16 +9,21 @@ $task = getSingleTask($task_id);
 <main>
 
   <?php
-  if (isset($task_id)) {
-    try {
-      deleteTask($task_id);
-      echo '<div class="alert alert-success">';
-      echo "Poistettu tehtävä #" . $task_id . " " . $task["task_name"];
-      echo '</div>';
-    } catch (Exception $pdoex) {
-      echo '<div class="alert alert-fail">' . $pdoex->getMessage() . '</div>';
+  if (!empty($task)) {
+    if (isset($task_id)) {
+      try {
+        deleteTask($task_id);
+        echo '<div class="alert alert-success">';
+        echo "Poistettu tehtävä #" . $task_id . " " . $task["task_name"];
+        echo '</div>';
+      } catch (Exception $pdoex) {
+        echo '<div class="alert alert-fail">' . $pdoex->getMessage() . '</div>';
+      }
     }
+  } else {
+    echo '<div class="alert alert-fail">Valitsemaasi tehtävää ei löydy tietokannasta.</div>';
   }
+  
   ?>
 
   <div style="margin-top: 2em;">

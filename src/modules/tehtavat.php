@@ -125,7 +125,6 @@ function editTask($task_id, $task_name, $due_date, $project_id)
 
     try {
         $pdo = connectToDatabase();
-        $pdo->beginTransaction();
 
         // Päivitetään nimi, deadline ja projekti
         $sql = "UPDATE task
@@ -162,10 +161,9 @@ function editTask($task_id, $task_name, $due_date, $project_id)
                 }
             }
         }
+        
 
-        $pdo->commit();
     } catch (PDOException $e) {
-        $pdo->rollBack();
         throw $e;
     }
 }

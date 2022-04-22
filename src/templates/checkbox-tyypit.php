@@ -23,7 +23,7 @@ function createPeopleCheckboxList($taskpeople)
     echo '<li>'
       . '<input style="margin-right: .5em;" type="checkbox" name="person' . $person["id"] . '"' 
       . ' value="' . $person["id"] . '"' 
-      . ($assigned == 2 ? ' checked' : '') // jos kiinnitetty tehtävään, checkbox = checked
+      . (isset($assigned) ? ($assigned == $person["id"] ? ' checked' : '') : '') // jos kiinnitetty tehtävään, checkbox = checked
       . '>'
       . '<label for="person' . $person["id"] . '">' . $person["firstname"] . ' ' . $person["lastname"] . '</label>'
       . '</li>';
