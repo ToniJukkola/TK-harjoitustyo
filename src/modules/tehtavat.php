@@ -88,6 +88,10 @@ function deleteTask($task_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
 
+    // Tarkistetaan, että käyttäjä on kirjautunut
+    checkIfLoggedIn();
+
+    // Tarkistetaan, että tehtävän id on tiedossa
     if (!isset($task_id)) {
         throw new Exception("Virhe poistettavan tehtävän id:n noutamisessa.");
     }
@@ -122,6 +126,9 @@ function editTask($task_id, $task_name, $due_date, $project_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'tyypit.php';
+
+    // Tarkistetaan, että käyttäjä on kirjautunut
+    checkIfLoggedIn();
     
     // Tarkistetaan, että arvot on asetettu
     if (!isset($task_name) || !isset($due_date) || !isset($project_id)) {
@@ -199,6 +206,9 @@ function addTask($task_name, $due_date, $project_id)
     require_once MODULES_DIR . 'projektit.php';
     require_once MODULES_DIR . 'tyypit.php';
 
+    // Tarkistetaan, että käyttäjä on kirjautunut
+    checkIfLoggedIn();
+
     // Tarkistetaan, että arvot on asetettu
     if (!isset($task_name) || !isset($due_date) || !isset($project_id)) {
         throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään<ol>
@@ -245,5 +255,14 @@ function addTask($task_name, $due_date, $project_id)
     } catch (PDOException $e) {
         $pdo->rollBack();
         throw $e;
+    }
+}
+
+/**
+ * Tarkistaa onko käyttäjä kirjautunut sisään
+ */
+function checkIfLoggedIn() {
+    if (!isset($_SESSION["username"])) {
+        throw new Exception("Sinun täytyy kirjautua sisään käyttääksesi kaikkia toimintoja.");
     }
 }

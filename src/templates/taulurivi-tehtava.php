@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Luo rivit tehtävätaulukkoon
  * $filter = suodatusperuste
@@ -38,13 +39,18 @@ function createTaskRows($filter = NULL, $order = NULL)
       echo '<li>' . $assignee["firstname"] . ' ' . $assignee["lastname"][0] . '.</li>';
     }
     echo '</ul></td>';
-    echo '<td class="task-edit">
-    <form action="tehtava-muokkaa.php?id=' . $task["task_id"] . '&state=edit" method="post">
+    if (!isset($_SESSION["username"])) {
+      echo '<td class="task-edit" style="color: rgba(0,0,0,.4);font-size:.9em;">';
+      echo '<em>Vain kirjautuneille</em>';
+    } else {
+      echo '<td class="task-edit">';
+      echo '<form action="tehtava-muokkaa.php?id=' . $task["task_id"] . '&state=edit" method="post">
     <input type="submit" name="submit" value="Muokkaa">
     </form>
     <form action="tehtava-poista.php?id=' . $task["task_id"] . '" method="post">
     <input type="submit" name="submit" value="Poista">
-    </form></td>';
-    echo '</tr>';
+    </form>';
+    }
+    echo '</td></tr>';
   }
 }

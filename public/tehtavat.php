@@ -7,9 +7,15 @@ include_once(TEMPLATES_DIR . "lista-tehtava.php");
 <main>
 
     <h2>Tehtävälista</h2>
-    <div style="display: flex; justify-content: flex-end;">
-    <a href="tehtava-uusi.php"><button>Lisää tehtävä</button></a>
-    </div>
+    <?php
+    if (!isset($_SESSION["username"])) {
+        echo '<div class="alert"><a href="kirjaudu.php">Kirjaudu sisään</a> lisätäksesi ja hallinnoidaksesi tehtäviä.</div>';
+    } else {
+        echo '<div style="display: flex; justify-content: flex-end;">
+        <a href="tehtava-uusi.php"><button>Lisää tehtävä</button></a>
+    </div>';
+    }
+    ?>
 
     <h3>Keskeneräiset tehtävät</h3>
 
@@ -19,7 +25,7 @@ include_once(TEMPLATES_DIR . "lista-tehtava.php");
             <th>Deadline</th>
             <th>Projekti</th>
             <th>Henkilöt</th>
-            <th>Hallitse</th>
+            <th class="task-edit">Hallitse</th>
         </thead>
         <tbody>
             <?php

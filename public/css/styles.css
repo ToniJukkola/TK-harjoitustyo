@@ -94,8 +94,12 @@ form, .register-toggle {
     gap: 1em;
 }
 
-form > div, form > input[type=submit], .register-toggle > div {
+form > div, .register-toggle > div {
     display: grid;
+    justify-self: start;
+}
+
+form input[type=submit] {
     justify-self: start;
 }
 
@@ -105,7 +109,7 @@ form .alert {
     display: block;
 }
 
-/* TEHTÄVÄLISTA */
+/* TAULUKOT */
 
 table {
     text-align: left;
@@ -127,14 +131,22 @@ table ul {
     padding: 0;
 }
 
-td.task-edit {
-    display: flex;
-    flex-direction: column;
-    gap: .2rem;
-}
+/* TEHTÄVÄLISTA */
 
 table.task-table {
     width: 100%;
+}
+
+td.task-edit, th.task-edit {
+    text-align: right;
+}
+
+td.task-edit input[type=submit] {
+    justify-self: end;
+}
+
+td.task-edit input[type=submit]:first-child {
+    margin-bottom: .3rem;
 }
 
 ul.task-list > li {
