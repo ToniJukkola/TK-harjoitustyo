@@ -39,7 +39,7 @@ if(!isset($_SESSION["username"]) && isset($username) && isset($formType)) {
             echo '<div class="alert alert-fail">'.$e->getMessage().'</div>';
         }
     } else if($passwordCheck !== $password) {
-        echo '<div class="alert alert-fail">Passwords do not match</div>';
+        echo '<div class="alert alert-fail">Salasanat eivät täsmää</div>';
     }
 }
 

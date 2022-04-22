@@ -50,11 +50,11 @@ function register($username, $password, $firstName, $lastName) {
     require_once CONFIG_DIR.'dbconn.php';
     
     if( !isset($firstName) || !isset($lastName) || !isset($username) || !isset($password) ){
-        throw new Exception("Missing parameters! Cannot add person!");
+        throw new Exception('Tapahtui virhe. Kaikkia tietoja ei saatu. Ole yhteydessä "koodariin".');
     }
     
     if( empty($firstName) || empty($lastName) || empty($username) || empty($password) ){
-        throw new Exception("Cannot set empty values!");
+        throw new Exception("Älä jätä kenttiä tyhjäksi");
     }
     
     try{
