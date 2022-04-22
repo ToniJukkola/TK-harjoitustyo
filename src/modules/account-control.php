@@ -53,7 +53,7 @@ function register($username, $password, $firstName, $lastName) {
         throw new Exception("Missing parameters! Cannot add person!");
     }
     
-    if( empty($fname) || empty($lname) || empty($uname) || empty($pw) ){
+    if( empty($firstName) || empty($lastName) || empty($username) || empty($password) ){
         throw new Exception("Cannot set empty values!");
     }
     
@@ -67,7 +67,6 @@ function register($username, $password, $firstName, $lastName) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $statement->bindParam(4, $hashed_password);
         
-    
         $statement->execute();
     
         echo "Oho tähä toimi. Morjensta $firstName $lastName"; 

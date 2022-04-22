@@ -5,8 +5,8 @@ include_once MODULES_DIR.'account-control.php';
 $username = filter_input(INPUT_POST, "username");
 $password = filter_input(INPUT_POST, "password");
 $formType = filter_input(INPUT_POST, "formType");
-$formType = filter_input(INPUT_POST, "firstName");
-$formType = filter_input(INPUT_POST, "formType");
+$firstName = filter_input(INPUT_POST, "firstName");
+$lastName = filter_input(INPUT_POST, "lastName");
 
 if(isset($_SESSION["username"])) {
     try {
@@ -22,13 +22,13 @@ if(!isset($_SESSION["username"]) && isset($username) && isset($formType)) {
         try {
             login($username, $password);
             header("Location: index.php");
-            exit;
         } catch (Exception $e) {
             echo '<div class="alert alert-fail">'.$e->getMessage().'</div>';
         }
     } else if ($formType == 1) {
         try {
             register($username, $password, $firstName, $lastName);
+            login($username, $password);
             header("Location: index.php");
             exit;
         } catch (Exception $e) {
@@ -56,13 +56,16 @@ if(!isset($_SESSION["username"])) {
         <button type="submit">Kirjau-u</button>
         <div>Ei tunnuksii?</div>
         <div>
-            <label for="regPasswordAgain">Salasana uudestaan :DDD </label><input id="regPasswordAgain" type="password">
+            <label for="regPasswordAgain">Salasana uudestaan :DDD </label>
+            <input id="regPasswordAgain" type="password">
         </div>
         <div>
-            <label for="firstName">Etunimi: </label><input id="firstName" type="text">
+            <label for="firstName">Etunimi: </label>
+            <input id="firstName" name="firstName" type="text">
         </div>
         <div>
-            <label for="lastName">Sukuloimisnimi: </label><input id="lastName" type="text">
+            <label for="lastName">Sukuloimisnimi: </label>
+            <input id="lastName" name="lastName" type="text">
         </div>
         <div>
             <button type="submit">Reggaroi</button>
