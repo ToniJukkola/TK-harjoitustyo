@@ -4,21 +4,21 @@ Tehdään tehtävälista -appi.
 
 ## Vaatimukset:
 
-* Sovelluksen tulee käyttää tietokantaa. Voitte halutessanne käyttää tietokannan suunnittelu -osiossa suunnittelemaanne tietokantaa tai jotain toista. 
+- [x] Sovelluksen tulee käyttää tietokantaa. Voitte halutessanne käyttää tietokannan suunnittelu -osiossa suunnittelemaanne tietokantaa tai jotain toista. 
 
-* Tietokannassa tulee olla vähintään kolme taulua. 
+- [x] Tietokannassa tulee olla vähintään kolme taulua. 
 
-* Sovelluksessa tulee olla kaikki perus CRUD-toiminnallisuudet (Create, Read, Update, Delete) toteutettuna. 
+- [ ] Sovelluksessa tulee olla kaikki perus CRUD-toiminnallisuudet (Create, Read, Update, Delete) toteutettuna. 
 
-* Tietokantaoperaatioissa tulee käyttää transaktioita.
+- [ ] Tietokantaoperaatioissa tulee käyttää transaktioita.
 
-* Sovelluksessa tulee olla käyttöliittymä.
+- [x] Sovelluksessa tulee olla käyttöliittymä.
 
-* Sovelluksen tulee hyödyntää sessioita.
+- [ ] Sovelluksen tulee hyödyntää sessioita.
 
-* Tietoturva tulee olla huomioitu.
+- [ ] Tietoturva tulee olla huomioitu.
 
-* Sovellus tulee olla julkaistu.
+- [ ] Sovellus tulee olla julkaistu.
 
 Palauta tänne linkit julkaistuun sovellukseesi ja GitHub-repositorioon.
 

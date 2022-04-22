@@ -11,7 +11,7 @@ CREATE TABLE project(
 -- Person
 CREATE TABLE person(
     id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
     firstname VARCHAR(50) NOT NULL,
     lastname VARCHAR(50) NOT NULL,
     password VARCHAR(150)
