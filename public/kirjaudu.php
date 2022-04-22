@@ -1,29 +1,44 @@
 <?php
-include_once("../src/templates/head.php")
+include_once TEMPLATES_DIR.'head.php';
+include MODULES_DIR.'login.php';
 
+$username = filter_input(INPUT_POST, "email");
+$password = filter_input(INPUT_POST, "password");
 
+if(!isset($_SESSION["username"]) && isset($username)) {
 
+    try {
+        login($username, $password);
+        header("Location: index.php");
+        exit;
+    } catch (Exception $e) {
+        echo '<div class="alert alert-danger" role="alert">'.$e->getMessage().'</div>';
+    }
+}
 
+if(!isset($_SESSION["username"])) {
 ?>
 
 <main>
-    <form action="">
-        <label for="loginUName">Käyttäjätunnus: </label><input id="loginUName" type="text">
-        <label for="loginPassword">Salasana: </label><input id="loginPassword" type="text">
-        <button>Kirjau-u</button>
-        
-    </form>
+    <form action="kirjaudu.php" method="post">
+        <div>
+            <input type="radio" name="formType" id="loginRadio" value="0" checked>
+            <label for="loginRadio">Kirjaudu</label>
+            <input type="radio" name="formType" id="registerRadio" value="1">
+            <label for="registerRadio">Rekisteröidy</label>
+            
+        </div>
+        <label for="username">Sähköposti: </label>
+        <input id="username" name="username" type="text">
+        <label for="password">Salasana: </label>
+        <input id="password" name="password" type="password">
+        <button type="submit">Kirjau-u</button>
+        </form>
 
-    <form>
-        Ei tunnuksii?
+        <form action="">
+        <div>Ei tunnuksii?</div>
         <div>
-            <label for="regUName">Käyttäjätunnus: </label><input id="regUName" type="text">
-        </div>
-        <div>
-            <label for="regPassword">Salasana: </label><input id="regPassword" type="text">
-        </div>
-        <div>
-            <label for="regPasswordAgain">Salasana uudestaan:DDD : </label><input id="regPasswordAgain" type="text">
+            <label for="regPasswordAgain">Salasana uudestaan:DDD : </label><input id="regPasswordAgain" type="password">
         </div>
         <div>
             <label for="firstName">Etunimi: </label><input id="firstName" type="text">
@@ -37,6 +52,6 @@ include_once("../src/templates/head.php")
     </form>
 </main>
 
-<?php
-include_once("../src/templates/foot.php")
+<?php }
+include_once TEMPLATES_DIR.'foot.php';
 ?>
