@@ -161,8 +161,18 @@ function editTask($task_id, $task_name, $due_date, $project_id)
                 }
             }
         }
-        
 
+        // Jos tehtävä on merkitty valmiiksi, asetetaan sille valmistumispäivä
+        if (isset($_POST["finished"]) && $_POST["date_finished"]) {
+            $sql = "UPDATE task
+            SET date_finished = ?
+            WHERE id = ?";
+            $statement = $pdo->prepare($sql);
+            $statement->bindParam(1, $_POST["date_finished"], PDO::PARAM_STR);
+            $statement->bindParam(2, $task_id, PDO::PARAM_INT);
+            $statement->execute();
+        }
+        
     } catch (PDOException $e) {
         throw $e;
     }

@@ -34,6 +34,14 @@ $taskpeople = getTaskPeople($task_id);
         <label for="people">Henkilöt:</label>
         <?php createPeopleCheckboxList($taskpeople) ?>
       </div>
+      <div class="alert" style="margin-top: 0em;">
+        <label for="finished">Valmis?</label>
+        <input type="checkbox" name="finished">
+        <div class="hidden" style="margin-top: .5em;" id="date-finished-container">
+          <label for="date_finished">Valmistui:</label>
+          <input type="date" name="date_finished" id="date-finished-input">
+        </div>
+      </div>
       <input type="submit" value="Hyväksy muutokset">
     </form>
 

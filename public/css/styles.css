@@ -129,3 +129,10 @@ td.task-edit {
 table.task-table {
     width: 100%;
 }
+
+/* ----- */
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
