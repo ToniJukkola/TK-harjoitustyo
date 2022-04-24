@@ -10,7 +10,7 @@ include_once(TEMPLATES_DIR . "head.php");
         <thead>
             <th>Homma</th>
             <th>Päävastuussa</th>
-            <th>Merkittävä(t) jeesijä(t)</th>
+            <th>Myötävaikuttaja(t)</th>
         </thead>
         <tbody>
           <tr>
@@ -52,6 +52,5 @@ include_once(TEMPLATES_DIR . "head.php");
 </main>
 
 <?php
-
 include_once(TEMPLATES_DIR . "foot.php");
 ?>

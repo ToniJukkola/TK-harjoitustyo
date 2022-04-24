@@ -1,7 +1,7 @@
 <?php
 include_once(TEMPLATES_DIR . "head.php");
-include_once(TEMPLATES_DIR . "taulurivi-tehtava.php");
-include_once(TEMPLATES_DIR . "lista-tehtava.php");
+require_once(TEMPLATES_DIR . "taulurivi-tehtava.php");
+require_once(TEMPLATES_DIR . "lista-tehtava.php");
 ?>
 
 <main>
@@ -36,15 +36,12 @@ include_once(TEMPLATES_DIR . "lista-tehtava.php");
 
     <h3>Valmistuneet tehtävät</h3>
 
-    <ul class="task-list">
-        <?php
-        createFinishedTaskList();
-        ?>
-    </ul>
+    <?php
+    createFinishedTaskList();
+    ?>
 
 </main>
 
 <?php
-
 include_once(TEMPLATES_DIR . "foot.php");
 ?>

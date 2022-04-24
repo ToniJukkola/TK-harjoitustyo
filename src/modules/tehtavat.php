@@ -9,7 +9,7 @@ function getTasks()
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, priority_level, project_name FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, project_name FROM task
         LEFT JOIN project ON project.id = task.project_id";
         $tasks = $pdo->query($sql);
         return $tasks->fetchAll();
@@ -27,7 +27,7 @@ function getSingleTask($task_id)
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, priority_level, project_name, project_id FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, project_name, project_id FROM task
         LEFT JOIN project ON project.id = task.project_id
         WHERE task.id = ?";
         $statement = $pdo->prepare($sql);
@@ -129,7 +129,7 @@ function editTask($task_id, $task_name, $due_date, $project_id)
 
     // Tarkistetaan, että käyttäjä on kirjautunut
     checkIfLoggedIn();
-    
+
     // Tarkistetaan, että arvot on asetettu
     if (!isset($task_name) || !isset($due_date) || !isset($project_id)) {
         throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään<ol>
@@ -261,7 +261,8 @@ function addTask($task_name, $due_date, $project_id)
 /**
  * Tarkistaa onko käyttäjä kirjautunut sisään
  */
-function checkIfLoggedIn() {
+function checkIfLoggedIn()
+{
     if (!isset($_SESSION["username"])) {
         throw new Exception("Sinun täytyy kirjautua sisään käyttääksesi kaikkia toimintoja.");
     }

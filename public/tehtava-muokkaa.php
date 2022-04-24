@@ -4,13 +4,15 @@ require_once(MODULES_DIR . "tehtavat.php");
 require_once(TEMPLATES_DIR . "dropdown-projektit.php");
 require_once(TEMPLATES_DIR . "checkbox-henkilot.php");
 
-$task_id = $_GET["id"];
 if (isset($_GET["state"])) {
   $showForm = $_GET["state"];
 }
-$task = getSingleTask($task_id);
-$project_id = $task["project_id"];
-$taskpeople = getTaskPeople($task_id);
+if (isset($_GET["id"])) {
+  $task_id = $_GET["id"];
+  $task = getSingleTask($task_id);
+  $project_id = $task["project_id"];
+  $taskpeople = getTaskPeople($task_id);
+}
 ?>
 
 <main>

@@ -14,17 +14,19 @@ function createTaskRows($filter = NULL, $order = NULL)
 
   if ($order == "deadline") {
     // Järjestetään tehtävät deadlinen mukaan
-    usort($tasks, fn ($a, $b) => strtotime($a["due_date"]) - strtotime($b["due_date"]));
-  }
-
-  if ($filter == "finished") {
-    // Filtteröidään näkyviin vain valmistuneet tehtävät
-    $tasks = array_filter($tasks, fn ($task) => !is_null($task["date_finished"]));
+    usort($tasks, function ($a, $b) {
+      $sorted = strtotime($a["due_date"]) - strtotime($b["due_date"]);
+      return $sorted;
+    });
   }
 
   if ($filter == "not_finished") {
     // Filtteröidään näkyviin vain keskeneräiset tehtävät
-    $tasks = array_filter($tasks, fn ($task) => is_null($task["date_finished"]));
+    $tasks = array_filter($tasks, function ($task) {
+      if (is_null($task["date_finished"])) {
+        return $task;
+      }
+    });
   }
 
   // Loopataan järjestetyn tehtävälistan läpi ja luodaan taulurivit
