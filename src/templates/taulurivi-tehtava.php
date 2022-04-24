@@ -33,7 +33,7 @@ function createTaskRows($filter = NULL, $order = NULL)
   foreach ($tasks as $task) {
     $assignees = getTaskPeople($task["task_id"]);
     echo '<tr>';
-    echo '<td>' . $task["task_name"] . '</td>';
+    echo '<td><a href="tehtava.php?id=' .$task["task_id"] . '">' . $task["task_name"] . '</a></td>';
     echo '<td>' . $task["due_date_local"] . '</td>';
     echo '<td>' . $task["project_name"] . '</td>';
     echo '<td><ul>';

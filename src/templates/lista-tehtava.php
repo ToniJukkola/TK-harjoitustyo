@@ -36,8 +36,8 @@ function createFinishedTaskList()
   foreach ($tasks as $task) {
     $assignees = getTaskPeople($task["task_id"]);
     echo '<li>';
-    echo $task["date_finished_local"] . ' ' . $task["task_name"];
-    echo ' (' . $task["project_name"] . ')';
+    echo $task["date_finished_local"] . ' <a href="tehtava.php?id=' .$task["task_id"] . '">'. $task["task_name"];
+    echo '</a> (' . $task["project_name"] . ')';
     if (count($assignees) > 0) {
       echo '<br>– tekijät: ';
       foreach ($assignees as $assignee) {

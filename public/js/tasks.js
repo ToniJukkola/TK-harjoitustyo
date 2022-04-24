@@ -3,14 +3,21 @@ const DATE_FINISHED_CONTAINER = document.getElementById("date-finished-container
 const DATE_FINISHED_INPUT = document.getElementById("date-finished-input");
 const FINISHED_CHECKBOX = document.querySelector('[name="finished"]');
 
-// Toggletaan date_finished näkyviin tai pois riippuen siitä onko checkbox valittuna vai ei
-FINISHED_CHECKBOX.addEventListener("change", () => {
-  DATE_FINISHED_CONTAINER.classList.toggle("hidden");
+if (FINISHED_CHECKBOX) {
 
-  // Asetetaan date_finishedille oletusarvoksi tämän hetken päivä
+  // Tarkistetaan checkboxin arvo
   if (FINISHED_CHECKBOX.checked == true) {
-    DATE_FINISHED_INPUT.valueAsDate = new Date();
-  } else {
-    DATE_FINISHED_INPUT.value = "";
+    DATE_FINISHED_CONTAINER.classList.remove("hidden");
   }
-})
+
+  // Toggletaan date_finished näkyviin tai pois riippuen siitä onko checkbox valittuna vai ei
+  FINISHED_CHECKBOX.addEventListener("change", () => {
+    DATE_FINISHED_CONTAINER.classList.toggle("hidden");
+
+    if (FINISHED_CHECKBOX.checked && DATE_FINISHED_INPUT.value == "") {
+      DATE_FINISHED_INPUT.valueAsDate = new Date();
+    } else {
+      DATE_FINISHED_INPUT.value = "";
+    }
+  })
+}

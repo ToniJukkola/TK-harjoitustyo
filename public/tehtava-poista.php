@@ -36,10 +36,6 @@ $task = getSingleTask($task_id);
   }
   ?>
 
-  <div style="margin-top: 2em;">
-    <a href="tehtavat.php"><button>Takaisin tehtävälistaukseen</button></a>
-  </div>
-
 </main>
 
 <?php

@@ -45,10 +45,22 @@ if (isset($_GET["id"])) {
         </div>
         <div class="alert" style="margin-top: 0em;">
           <label for="finished">Valmis?</label>
-          <input type="checkbox" name="finished">
+          <input type="checkbox" name="finished"
+          <?php
+          if (!is_null($task["date_finished"])) {
+            echo ' checked';
+          }
+          ?>
+          >
           <div class="hidden" style="margin-top: .5em;" id="date-finished-container">
             <label for="date_finished">Valmistui:</label>
-            <input type="date" name="date_finished" id="date-finished-input">
+            <input type="date" name="date_finished" id="date-finished-input"
+            <?php
+          if (!is_null($task["date_finished"])) {
+            echo ' value="' . $task["date_finished"] . '"';
+          }
+          ?>
+          >
           </div>
         </div>
         <input type="submit" value="Hyväksy muutokset">
@@ -83,10 +95,6 @@ if (isset($_GET["id"])) {
     }
   }
   ?>
-
-  <div style="margin-top: 2em;">
-    <a href="tehtavat.php"><button>Takaisin tehtävälistaukseen</button></a>
-  </div>
 
 </main>
 
