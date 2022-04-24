@@ -5,7 +5,7 @@
 $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 // Jos url sisältää 'tehtava-muokkaa', lisätään sivulle js-linkitys
 if (strpos($url,'tehtava-muokkaa') !== false) {
-  echo '<script src="./public/js/tasks.js"></script>';
+  echo '<script src="./js/tasks.js"></script>';
 }
 ?>
 </body>

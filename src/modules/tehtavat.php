@@ -9,7 +9,7 @@ function getTasks()
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, project_name FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, CONCAT(SUBSTRING(date_created, 9, 2), '.', SUBSTRING(date_created, 6, 2), '.', YEAR(date_created)) as date_created_local, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, project_name FROM task
         LEFT JOIN project ON project.id = task.project_id";
         $tasks = $pdo->query($sql);
         return $tasks->fetchAll();
@@ -27,8 +27,9 @@ function getSingleTask($task_id)
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, project_name, project_id FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, CONCAT(SUBSTRING(date_created, 9, 2), '.', SUBSTRING(date_created, 6, 2), '.', YEAR(date_created)) as date_created_local, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, person.id AS creator_id, firstname AS creator_firstname, lastname AS creator_lastname, project_name, project_id FROM task
         LEFT JOIN project ON project.id = task.project_id
+        LEFT JOIN person ON person.id = created_by
         WHERE task.id = ?";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_id, PDO::PARAM_INT);
@@ -55,7 +56,7 @@ function getTaskPeople($task_id)
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_id, PDO::PARAM_INT);
         $statement->execute();
-        return $statement->fetchAll();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         throw $e;
     }
@@ -182,7 +183,9 @@ function editTask($task_id, $task_name, $due_date, $project_id)
             }
         }
 
-        // Jos tehtävä on merkitty valmiiksi, asetetaan sille valmistumispäivä
+        // Tarkistetaan onko tehtävälle asetettu valmistumispäivää
+        // -- jos on > lisätään valmistumispäivä kantaan
+        // -- jos ei > asetetaan valmistumispäiväksi null
         if (isset($_POST["finished"]) && $_POST["date_finished"]) {
             $sql = "UPDATE task
             SET date_finished = ?
@@ -190,6 +193,13 @@ function editTask($task_id, $task_name, $due_date, $project_id)
             $statement = $pdo->prepare($sql);
             $statement->bindParam(1, $_POST["date_finished"], PDO::PARAM_STR);
             $statement->bindParam(2, $task_id, PDO::PARAM_INT);
+            $statement->execute();
+        } else {
+            $sql = "UPDATE task
+            SET date_finished = NULL
+            WHERE id = ?";
+            $statement = $pdo->prepare($sql);
+            $statement->bindParam(1, $task_id, PDO::PARAM_INT);
             $statement->execute();
         }
     } catch (PDOException $e) {
@@ -227,12 +237,14 @@ function addTask($task_name, $due_date, $project_id)
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
 
+        
         // Lisätään tehtävän nimi, deadline ja projekti
-        $sql = "INSERT INTO task (task_name, due_date, project_id) VALUES (?, ?, ?);";
+        $sql = "INSERT INTO task (task_name, due_date, project_id, created_by) VALUES (?, ?, ?, ?);";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_name, PDO::PARAM_STR);
         $statement->bindParam(2, $due_date, PDO::PARAM_STR);
         $statement->bindParam(3, $project_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $creator, PDO::PARAM_INT);
         $statement->execute();
         $task_id = $pdo->lastInsertId(); // task_id seuraavaan vaiheeseen
 
