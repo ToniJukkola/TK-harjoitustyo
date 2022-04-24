@@ -54,7 +54,37 @@ CREATE TABLE task_persons(
     FOREIGN KEY (task_id) REFERENCES task(id),
     CONSTRAINT `fk_taskpersons_person`
     FOREIGN KEY (person_id) REFERENCES person(id)
-);';
+);
+
+CREATE TABLE task_action(
+    id SMALLINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    action_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE task_history(
+    task_id SMALLINT NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_by SMALLINT NOT NULL,
+    action_id SMALLINT NOT NULL,
+    old_name VARCHAR(50),
+    old_project SMALLINT,
+    old_due DATE,
+    old_finished DATE,
+    CONSTRAINT `pk_task_update`
+    PRIMARY KEY (task_id, updated_at),
+    CONSTRAINT `fk_update_person`
+    FOREIGN KEY (updated_by) REFERENCES person(id),
+    CONSTRAINT `fk_update_action`
+    FOREIGN KEY (action_id) REFERENCES task_action(id)
+);
+
+CREATE VIEW vw_task_updates AS 
+SELECT updated_at, CONCAT("#", task_id, " ", old_name) AS task, action_name, CONCAT(firstname, " ", lastname) AS updated_by  
+FROM task_history 
+LEFT JOIN task_action ON task_action.id = task_history.action_id 
+LEFT JOIN task ON task.id = task_history.task_id
+LEFT JOIN person ON person.id = updated_by
+ORDER BY updated_at';
 
 $dummydata = 'INSERT INTO project (project_name) VALUES
 ("Muut projektit"),
@@ -79,4 +109,9 @@ INSERT INTO task_persons (task_id, person_id) VALUES
 (3, 3),
 (4, 3),
 (4, 2),
-(4, 1)';
+(4, 1);
+
+INSERT INTO task_action (action_name) VALUES 
+("lisäys"), 
+("poisto"), 
+("muokkaus");';
