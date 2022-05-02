@@ -38,7 +38,7 @@ require_once(MODULES_DIR . "tyypit.php");
 
     <form class="form-task" action="tyypit-uusi.php" method="post">
       <div>
-        <label for="user_name">Käyttäjänimi:</label>
+        <label for="username">Käyttäjänimi:</label>
         <input type="text" name="username">
       </div>
       <div>
@@ -46,11 +46,11 @@ require_once(MODULES_DIR . "tyypit.php");
         <input type="text" name="email">
       </div>
       <div>
-        <label for="first_name">Etunimi:</label>
+        <label for="firstname">Etunimi:</label>
         <input type="text" name="firstname">
       </div>
       <div>
-        <label for="last_name">Sukunimi:</label>
+        <label for="lastname">Sukunimi:</label>
         <input type="text" name="lastname">
       </div>
       <input type="submit" value="Lisää uusi henkilö">
