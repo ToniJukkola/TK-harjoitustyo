@@ -17,8 +17,8 @@ function getPerson(){
 
 }
 
-function addPerson($username, $email, $firstname, $lastname)
-{
+function addPerson($username, $email, $firstname, $lastname) {
+
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'tyypit.php';
 
@@ -43,6 +43,37 @@ function addPerson($username, $email, $firstname, $lastname)
         $statement->bindParam(4, $lastname, PDO::PARAM_INT);
         $statement->execute();
         $person_id = $pdo->lastInsertId();
+
+        $pdo->commit();
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
+}
+
+function deletePerson($person_id) {
+
+    $alert = "Oletko varma että haluat poistaa tämän henkilön?";
+    require_once CONFIG_DIR . 'dbconn.php';
+    require_once MODULES_DIR . 'tyypit.php';
+
+    // Tarkistetaan, että käyttäjä on kirjautunut
+    //checkIfLoggedIn();
+
+    // Tarkistetaan, että henkilön id on tiedossa
+    if (!isset($person_id)) {
+        throw new Exception("Virhe poistettavan henkilön id:n noutamisessa.");
+    }
+
+    try {
+        alert($alert);
+        $pdo = connectToDatabase();
+        $pdo->beginTransaction();
+        // Poistetaan person-taulusta
+        $sql = "DELETE FROM person WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $person_id, PDO::PARAM_INT);
+        $statement->execute();
 
         $pdo->commit();
     } catch (PDOException $e) {
