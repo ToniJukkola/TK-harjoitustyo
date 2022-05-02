@@ -11,12 +11,12 @@ $person = getPerson();
 echo "<table>";
 echo "<h2>Henkilöt</h2>";
 
-echo "<thead><th>ID</th><th>Käyttäjänimi</th><th>Etunimi</th><th>Sukunimi</th><th>Muokkaa/Poista</th></thead>";
+echo "<thead><th>ID</th><th>Käyttäjänimi</th><th>Sähköposti</th><th>Etunimi</th><th>Sukunimi</th><th>Muokkaa/Poista</th></thead>";
 foreach($person as $p){
-    echo "<tbody><tr><td>".$p["id"]." </td><td>".$p["username"]." </td><td>".$p["firstname"]." </td><td>".$p["lastname"]."</td><td><button>Poista</button><button>Muokkaa</button></td></tr></tbody>";
+    echo "<tbody><tr><td>".$p["id"]." </td><td>".$p["username"]." </td><td>".$p["email"]." </td><td>".$p["firstname"]." </td><td>".$p["lastname"]."</td><td><button>Poista</button><button>Muokkaa</button></td></tr></tbody>";
 }
     echo "</table>";
-    echo "<br><button>Lisää Tyyppi</button></br>";
+    echo "<br><a href='tyypit-uusi.php'>Lisää Tyyppi</a></br>";
 ?>
 </main>
 
