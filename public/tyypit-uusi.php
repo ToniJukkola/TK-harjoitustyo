@@ -6,15 +6,15 @@ require_once(MODULES_DIR . "tyypit.php");
 <main>
 
   <h2>Lisää uusi henkilö</h2>
-
+  <a href='tyypit.php'><- Takaisin</a>
   <?php
 
   // Tarkistetaan onko käyttäjä kirjautunut
   // Jos ei, ohjataan kirjautumaan
-  //if (!isset($_SESSION["username"])) {
-   // echo '<div class="alert"><a href="kirjaudu.php">Kirjaudu sisään</a> lisätäksesi ja hallinnoidaksesi tehtäviä.</div>';
+  if (!isset($_SESSION["username"])) {
+    echo '<div class="alert alert-fail"><a href="kirjaudu.php">Kirjaudu sisään</a> lisätäksesi henkilöitä.</div>';
     // Jos kyllä, näytetään lomake
-  //} else {
+  } else {
 
     // Haetaan lomakkeen inputien arvot muuttujiin
     $username = filter_input(INPUT_POST, "username");
@@ -56,7 +56,7 @@ require_once(MODULES_DIR . "tyypit.php");
       <input type="submit" value="Lisää uusi henkilö">
     </form>
 
-  <?php /*}*/ ?>
+  <?php } ?>
 
 </main>
 

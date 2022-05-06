@@ -2,7 +2,7 @@
 
 function getPerson(){
     require_once CONFIG_DIR.'dbconn.php';
-
+    
     try{
         $pdo = connectToDatabase();
         // Create SQL query 
@@ -17,7 +17,7 @@ function getPerson(){
 
 }
 
-function getOnePerson(){
+function getOnePerson($person_id){
     require_once CONFIG_DIR.'dbconn.php';
 
     try{
@@ -43,7 +43,7 @@ function addPerson($username, $email, $firstname, $lastname) {
     require_once MODULES_DIR . 'tyypit.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
-    //checkIfLoggedIn();
+    checkIfLoggedIn();
 
     // Tarkistetaan, että arvot on asetettu
     if (!isset($username) || !isset($email) || !isset($firstname) || !isset($lastname)) {
@@ -60,7 +60,7 @@ function addPerson($username, $email, $firstname, $lastname) {
         $statement->bindParam(1, $username, PDO::PARAM_STR);
         $statement->bindParam(2, $email, PDO::PARAM_STR);
         $statement->bindParam(3, $firstname, PDO::PARAM_STR);
-        $statement->bindParam(4, $lastname, PDO::PARAM_INT);
+        $statement->bindParam(4, $lastname, PDO::PARAM_STR);
         $statement->execute();
         $person_id = $pdo->lastInsertId();
 
@@ -77,7 +77,7 @@ function deletePerson($person_id) {
     require_once MODULES_DIR . 'tyypit.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
-      //checkIfLoggedIn();
+      checkIfLoggedIn();
 
     // Tarkistetaan että henkilön id on tiedossa
     if (!isset($person_id)) {
@@ -86,16 +86,21 @@ function deletePerson($person_id) {
 
     try {
         $pdo = connectToDatabase();
-        $pdo->beginTransaction();
+        
         // Poistetaan person-taulusta
-        $sql = "DELETE FROM person WHERE person_id = ?";
+        $sql = "DELETE FROM person WHERE person.id = ?";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $person_id, PDO::PARAM_INT);
         $statement->execute();
-
-        $pdo->commit();
+       
     } catch (PDOException $e) {
-        //$pdo->rollBack();
         throw $e;
+    }
+}
+
+function checkIfLoggedIn()
+{
+    if (!isset($_SESSION["username"])) {
+        throw new Exception("Sinun täytyy kirjautua sisään.");
     }
 }
