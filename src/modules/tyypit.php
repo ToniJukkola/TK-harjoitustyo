@@ -51,9 +51,8 @@ function addPerson($username, $email, $firstname, $lastname) {
     }
 }
 
-function deletePerson($person_id) {
+function deletePerson($id) {
 
-    $alert = "Oletko varma että haluat poistaa tämän henkilön?";
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'tyypit.php';
 
@@ -61,18 +60,17 @@ function deletePerson($person_id) {
     //checkIfLoggedIn();
 
     // Tarkistetaan, että henkilön id on tiedossa
-    if (!isset($person_id)) {
+    if (!isset($id)) {
         throw new Exception("Virhe poistettavan henkilön id:n noutamisessa.");
     }
 
     try {
-        alert($alert);
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
         // Poistetaan person-taulusta
         $sql = "DELETE FROM person WHERE id = ?";
         $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $person_id, PDO::PARAM_INT);
+        $statement->bindParam(1, $id, PDO::PARAM_INT);
         $statement->execute();
 
         $pdo->commit();
