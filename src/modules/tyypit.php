@@ -6,9 +6,29 @@ function getPerson(){
     try{
         $pdo = connectToDatabase();
         // Create SQL query 
-        $sql = "SELECT id, username, email, firstname, lastname FROM person";
+        $sql = "SELECT person.id AS person_id, username, email, firstname, lastname FROM person";
         // Execute the query
         $person = $pdo->query($sql);
+
+        return $person->fetchAll();
+    }catch(PDOException $e){
+        throw $e;
+    }
+
+}
+
+function getOnePerson(){
+    require_once CONFIG_DIR.'dbconn.php';
+
+    try{
+        $pdo = connectToDatabase();
+        // Create SQL query 
+        $sql = "SELECT person.id AS person_id, username, email, firstname, lastname FROM person 
+        WHERE person.id = ?";
+        // Execute the query
+        $person = $pdo->prepare($sql);
+        $person->bindParam(1, $person_id, PDO::PARAM_INT);
+        $person->execute();
 
         return $person->fetchAll();
     }catch(PDOException $e){
@@ -51,16 +71,16 @@ function addPerson($username, $email, $firstname, $lastname) {
     }
 }
 
-function deletePerson($id) {
+function deletePerson($person_id) {
 
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'tyypit.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
-    //checkIfLoggedIn();
+      //checkIfLoggedIn();
 
-    // Tarkistetaan, että henkilön id on tiedossa
-    if (!isset($id)) {
+    // Tarkistetaan että henkilön id on tiedossa
+    if (!isset($person_id)) {
         throw new Exception("Virhe poistettavan henkilön id:n noutamisessa.");
     }
 
@@ -68,14 +88,14 @@ function deletePerson($id) {
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
         // Poistetaan person-taulusta
-        $sql = "DELETE FROM person WHERE id = ?";
+        $sql = "DELETE FROM person WHERE person_id = ?";
         $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $id, PDO::PARAM_INT);
+        $statement->bindParam(1, $person_id, PDO::PARAM_INT);
         $statement->execute();
 
         $pdo->commit();
     } catch (PDOException $e) {
-        $pdo->rollBack();
+        //$pdo->rollBack();
         throw $e;
     }
 }

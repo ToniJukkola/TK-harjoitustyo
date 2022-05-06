@@ -2,9 +2,9 @@
 include_once(TEMPLATES_DIR . "head.php");
 require_once(MODULES_DIR . "tyypit.php");
 
-if (isset($_GET["id"])) {
-    $person_id = $_GET["id"];
-    $person = getPerson($person_id);
+if (isset($_GET["person_id"])) {
+    $person_id = $_GET["person_id"];
+    $person = getOnePerson($person_id);
     }
 ?>
 <main>
@@ -20,11 +20,11 @@ if (isset($_GET["id"])) {
   } else {*/
 
     if (!empty($person)) {
-      if (isset($id)) {
+      if (isset($person_id)) {
         try {
-          deletePerson($id);
+          deletePerson($person_id);
           echo '<div class="alert alert-success">';
-          echo "Poistettu henkilö #" . $id . " " . $person["firstname"] . " " . $person["lastname"];
+          echo "Poistettu henkilö #" . $person_id . " " . $person["username"];
           echo '</div>';
         } catch (Exception $pdoex) {
           echo '<div class="alert alert-fail">' . $pdoex->getMessage() . '</div>';
@@ -36,7 +36,7 @@ if (isset($_GET["id"])) {
     
   /*}*/
   ?>
-
+    <a href='tyypit.php'><- Takaisin</a>
 </main>
 <?php
 include_once(TEMPLATES_DIR . "foot.php");
