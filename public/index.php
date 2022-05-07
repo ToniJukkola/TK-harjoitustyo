@@ -2,15 +2,13 @@
 include_once(TEMPLATES_DIR . "head.php");
 ?>
 
-<main>
+<main style="max-width: 600px;">
 
-<h2>h2</h2>
-<h3>h3</h3>
-  
-<h3>Alert boxeja!!</h3>
-<div class="alert">.alert</div>
-<div class="alert alert-success">.alert .alert-success</div>
-<div class="alert alert-fail">.alert .alert-fail</div>
+<h2>Tervetuloa!</h2>
+
+<p>Tämä on tietokantaohjelmoinnin kurssin harjoitustyöksi laadittu ryhmätyömanageri / projektinhallintasovellus.</p>
+
+<p>Tutustu sisältöön yllä olevien linkkien kautta. Kaikki toiminnot eivät ole käytettävissä ilman rekisteröitymistä tai kirjautumista.</p>
 
 </main>
 
