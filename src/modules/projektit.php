@@ -19,5 +19,7 @@ function getProjects(){
 function addProject($id, $name){
 
     require_once CONFIG_DIR.'dbconn.php';
-    
+    if( !isset($id) || !isset($name) ) {
+        throw new Exception("VITUN APINA MONKYY ")
+    }
 }
