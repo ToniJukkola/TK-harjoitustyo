@@ -11,6 +11,16 @@ foreach($projects as $p){
     echo "<li>".$p["id"]." ".$p["project_name"]."</li>";
 }
 echo "</ul>";
+
+if (!isset($_SESSION["username"])) {
+    echo '<div><a href="kirjaudu.php">Kirjaudu sisään</a></div>';
+} else {
+    echo '<div>
+    <a href="projektit-uusi.php"><button>Lisää projekti</button></a>
+</div>';
 echo "</main>";
+
+
+}
 
 include_once TEMPLATES_DIR.'foot.php';

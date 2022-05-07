@@ -1,5 +1,7 @@
 <?php
 
+
+// hakee projektit
 function getProjects(){
     require_once CONFIG_DIR.'dbconn.php';
 
@@ -16,10 +18,28 @@ function getProjects(){
      }
 }
 
-function addProject($id, $name){
+//lisää projektin
+function addProject($project_name){
 
     require_once CONFIG_DIR.'dbconn.php';
-    if( !isset($id) || !isset($name) ) {
-        throw new Exception("VITUN APINA MONKYY ")
+
+    if(!isset($project_name) ) {
+        throw new Exception("Ei toi ny tollee onnistu"); 
+    }
+
+    if( empty($project_name) ){
+        throw new Exception("Tyhjää tyhjää tyhjäää tyhjääääää");
+    }
+
+    try{
+        $pdo = connectToDatabase();
+
+        $sql = "INSERT INTO project(project_name) VALUES (?)";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $project_name);
+
+        $statement->execute();
+    }catch(PDOException $e){
+        throw $e;
     }
 }
