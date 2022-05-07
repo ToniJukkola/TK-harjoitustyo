@@ -1,7 +1,7 @@
 <?php
+    require_once CONFIG_DIR.'dbconn.php';
 
 function login($username, $password) {
-    require_once CONFIG_DIR.'dbconn.php';
     $pdo = connectToDatabase();
 
     if( !isset($username) || !isset($password) ){
@@ -13,9 +13,9 @@ function login($username, $password) {
     }
 
     try{
-        $sql = "SELECT * FROM person WHERE email=:username";
+        $sql = "SELECT * FROM person WHERE username = ?";
         $statement = $pdo->prepare($sql);
-        $statement->bindParam(":username", $username);
+        $statement->bindParam(1, $username);
         $statement->execute();
 
         if($statement->rowCount() <=0){
@@ -46,9 +46,7 @@ function logout(){
     }
 }
 
-function register($username, $password, $firstName, $lastName) {
-    require_once CONFIG_DIR.'dbconn.php';
-    
+function register($username, $password, $firstName, $lastName, $email) {
     if( !isset($firstName) || !isset($lastName) || !isset($username) || !isset($password) ){
         throw new Exception('Tapahtui virhe. Kaikkia tietoja ei saatu. Ole yhteydessä "koodariin".');
     }
@@ -59,19 +57,33 @@ function register($username, $password, $firstName, $lastName) {
     
     try{
         $pdo = connectToDatabase();
-        $sql = "INSERT INTO person (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO person (firstname, lastname, email, password, username) VALUES (?, ?, ?, ?, ?)";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $firstName);
         $statement->bindParam(2, $lastName);
-        $statement->bindParam(3, $username);
+        $statement->bindParam(3, $email);
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $statement->bindParam(4, $hashed_password);
+        $statement->bindParam(5, $username);
         
         $statement->execute();
-    
-        echo "Oho tähä toimi. Morjensta $firstName $lastName"; 
     }catch(PDOException $e){
         throw $e;
     }
 }
 
+function findUserByEmail($email) {
+    try{
+        $pdo = connectToDatabase();
+        $sql = "SELECT * FROM person WHERE email = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $email);
+        $statement->execute();
+
+        $row = $statement->fetch();
+
+        return $row;
+    }catch(PDOException $e){
+        throw $e;
+    }
+}
