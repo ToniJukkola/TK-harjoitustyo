@@ -1,12 +1,15 @@
 <?php
 
+/**
+ * Hakee kaikki tehtävät
+ */
 function getTasks()
 {
     require_once CONFIG_DIR . 'dbconn.php';
 
     try {
         $pdo = connectToDatabase();
-        $sql = "SELECT task.id AS task_id, task_name, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date, date_created, date_finished, priority_level, project_name FROM task
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, CONCAT(SUBSTRING(date_created, 9, 2), '.', SUBSTRING(date_created, 6, 2), '.', YEAR(date_created)) as date_created_local, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, project_name FROM task
         LEFT JOIN project ON project.id = task.project_id";
         $tasks = $pdo->query($sql);
         return $tasks->fetchAll();
@@ -15,6 +18,31 @@ function getTasks()
     }
 }
 
+/**
+ * Hakee yksittäisen tehtävän tehtävän id:n perusteella
+ */
+function getSingleTask($task_id)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+
+    try {
+        $pdo = connectToDatabase();
+        $sql = "SELECT task.id AS task_id, task_name, due_date, CONCAT(SUBSTRING(due_date, 9, 2), '.', SUBSTRING(due_date, 6, 2), '.', YEAR(due_date)) as due_date_local, date_created, CONCAT(SUBSTRING(date_created, 9, 2), '.', SUBSTRING(date_created, 6, 2), '.', YEAR(date_created)) as date_created_local, date_finished, CONCAT(SUBSTRING(date_finished, 9, 2), '.', SUBSTRING(date_finished, 6, 2), '.', YEAR(date_finished)) as date_finished_local, person.id AS creator_id, firstname AS creator_firstname, lastname AS creator_lastname, project_name, project_id FROM task
+        LEFT JOIN project ON project.id = task.project_id
+        LEFT JOIN person ON person.id = created_by
+        WHERE task.id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+        $statement->execute();
+        return $statement->fetch();
+    } catch (PDOException $e) {
+        throw $e;
+    }
+}
+
+/**
+ * Hakee tehtävään kiinnitetyt henkilöt tehtävän id:n perusteella
+ */
 function getTaskPeople($task_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
@@ -28,8 +56,294 @@ function getTaskPeople($task_id)
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_id, PDO::PARAM_INT);
         $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        throw $e;
+    }
+}
+
+/**
+ * Hakee task_persons-taulusta rivin, joka vastaa parametreina annettua henkilön id:tä ja tehtävän id:tä
+ */
+function getTaskPersonsRowByPersonAndTask($person_id, $task_id)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+
+    try {
+        $pdo = connectToDatabase();
+        $sql = "SELECT * FROM task_persons WHERE person_id = ? AND task_id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $person_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $task_id, PDO::PARAM_INT);
+        $statement->execute();
         return $statement->fetchAll();
     } catch (PDOException $e) {
         throw $e;
+    }
+}
+
+/** 
+ * Poistaa tehtävän
+ */
+function deleteTask($task_id)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+
+    // Tarkistetaan, että käyttäjä on kirjautunut
+    checkIfLoggedIn();
+
+    // Tarkistetaan, että tehtävän id on tiedossa
+    if (!isset($task_id)) {
+        throw new Exception("Virhe poistettavan tehtävän id:n noutamisessa.");
+    }
+
+    // Haetaan vanha data talteen
+    $old_data = getSingleTask($task_id);
+
+    try {
+        $pdo = connectToDatabase();
+        $pdo->beginTransaction();
+
+        // Poistetaan yhteys task_persons-taulusta
+        $sql = "DELETE FROM task_persons WHERE task_id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+        $statement->execute();
+
+        // Poistetaan task-taulusta
+        $sql = "DELETE FROM task WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+        $statement->execute();
+
+        // Lisätään tehtävän poisto task_update-tauluun
+        $action_id = 2; // asetetaan toiminnaksi poisto
+
+        // Haetaan poistajan id
+        $sql = "SELECT id FROM person WHERE email = ?;";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $_SESSION["username"]);
+        $statement->execute();
+        $deleted_by = $statement->fetch(PDO::FETCH_ASSOC)["id"]; // deleted_by seuraavaan vaiheeseen
+
+        $sql = "INSERT INTO task_history (task_id, updated_by, action_id, old_name, old_project, old_due, old_finished) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $deleted_by, PDO::PARAM_INT);
+        $statement->bindParam(3, $action_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $old_data["task_name"], PDO::PARAM_STR);
+        $statement->bindParam(5, $old_data["project_id"], PDO::PARAM_STR);
+        $statement->bindParam(6, $old_data["due_date"], PDO::PARAM_STR);
+        $statement->bindParam(7, $old_data["date_finished"]);
+        $statement->execute();
+
+        $pdo->commit();
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
+}
+
+/**
+ * Muokkaa tehtävää
+ */
+function editTask($task_id, $task_name, $due_date, $project_id)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+    require_once MODULES_DIR . 'tyypit.php';
+
+    // Tarkistetaan, että käyttäjä on kirjautunut
+    checkIfLoggedIn();
+
+    // Tarkistetaan, että arvot on asetettu
+    if (!isset($task_name) || !isset($due_date) || !isset($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään<ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
+
+    // Tarkistetaan, etteivät arvot ole tyhjiä
+    if (empty($task_name) || empty($due_date) || empty($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään
+        <ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
+
+    // Haetaan vanha data talteen
+    $old_data = getSingleTask($task_id);
+
+    try {
+        $pdo = connectToDatabase();
+
+        // Päivitetään nimi, deadline ja projekti
+        $sql = "UPDATE task
+        SET task_name = ?, due_date = ?, project_id = ?
+        WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_name, PDO::PARAM_STR);
+        $statement->bindParam(2, $due_date, PDO::PARAM_STR);
+        $statement->bindParam(3, $project_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $task_id, PDO::PARAM_INT);
+        $statement->execute();
+
+        // Haetaan kaikki henkilöt ja loopataan läpi
+        $people = getPerson();
+        foreach ($people as $person) {
+            // Jos henkilö vastaava checkbox ei ole checked -> poistetaan henkilöä vastaava tehtävärivi task_personsista
+            $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-henkilot.php) namea vastaavan muuttuja luominen
+            if (!isset($_POST[$checkboxname])) {
+                $sql = "DELETE FROM task_persons WHERE task_id = ? AND person_id = ?;";
+                $statement = $pdo->prepare($sql);
+                $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+                $statement->bindParam(2, $person["id"], PDO::PARAM_INT);
+                $statement->execute();
+            } else { // Jos checkbox on valittu
+                // Haetaan task_persons-taulun rivit, jotka vastaavat tehtävän ja henkilön id:tä
+                $taskrows = getTaskPersonsRowByPersonAndTask($person["id"], $task_id);
+                // Jos ei vielä ole olemassa tehtävän ja henkilön muodostamaa riviä, luodaan sellainen
+                if (count($taskrows) <= 0) {
+                    $sql = "INSERT INTO task_persons VALUES (?, ?);";
+                    $statement = $pdo->prepare($sql);
+                    $statement->bindParam(1, $_POST[$checkboxname], PDO::PARAM_INT);
+                    $statement->bindParam(2, $task_id, PDO::PARAM_INT);
+                    $statement->execute();
+                }
+            }
+        }
+
+        // Tarkistetaan onko tehtävälle asetettu valmistumispäivää
+        // -- jos on > lisätään valmistumispäivä kantaan
+        // -- jos ei > asetetaan valmistumispäiväksi null
+        if (isset($_POST["finished"]) && $_POST["date_finished"]) {
+            $sql = "UPDATE task
+            SET date_finished = ?
+            WHERE id = ?";
+            $statement = $pdo->prepare($sql);
+            $statement->bindParam(1, $_POST["date_finished"], PDO::PARAM_STR);
+            $statement->bindParam(2, $task_id, PDO::PARAM_INT);
+            $statement->execute();
+        } else {
+            $sql = "UPDATE task
+            SET date_finished = NULL
+            WHERE id = ?";
+            $statement = $pdo->prepare($sql);
+            $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+            $statement->execute();
+        }
+
+        // Lisätään tehtävän päivitys task_history-tauluun
+        $action_id = 3; // asetetaan toiminnaksi päivitys
+
+        // Haetaan päivittäjän id
+        $sql = "SELECT id FROM person WHERE email = ?;";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $_SESSION["username"]);
+        $statement->execute();
+        $updated_by = $statement->fetch(PDO::FETCH_ASSOC)["id"]; // udpdated_by seuraavaan vaiheeseen
+
+        // Lisätään task_history-tauluun
+        $sql = "INSERT INTO task_history (task_id, updated_by, action_id, old_name, old_project, old_due, old_finished) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $updated_by, PDO::PARAM_INT);
+        $statement->bindParam(3, $action_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $old_data["task_name"], PDO::PARAM_STR);
+        $statement->bindParam(5, $old_data["project_id"], PDO::PARAM_STR);
+        $statement->bindParam(6, $old_data["due_date"], PDO::PARAM_STR);
+        $statement->bindParam(7, $old_data["date_finished"]);
+        $statement->execute();
+    } catch (PDOException $e) {
+        throw $e;
+    }
+}
+
+/** 
+ * Lisää uuden tehtävän
+ */
+function addTask($task_name, $due_date, $project_id)
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+    require_once MODULES_DIR . 'projektit.php';
+    require_once MODULES_DIR . 'tyypit.php';
+
+    // Tarkistetaan, että käyttäjä on kirjautunut
+    checkIfLoggedIn();
+
+    // Tarkistetaan, että arvot on asetettu
+    if (!isset($task_name) || !isset($due_date) || !isset($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään<ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
+
+    // Tarkistetaan, etteivät arvot ole tyhjiä
+    if (empty($task_name) || empty($due_date) || empty($project_id)) {
+        throw new Exception("Et voi lisätä tyhjiä arvoja. Tehtävällä täytyy olla vähintään
+        <ol>
+        <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
+    }
+
+    // Lisätään uusi tehtävä kantaan
+    try {
+        $pdo = connectToDatabase();
+        $pdo->beginTransaction();
+
+        // Haetaan lisääjä
+        $sql = "SELECT id FROM person WHERE email = ?;";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $_SESSION["username"]);
+        $statement->execute();
+        $created_by = $statement->fetch(PDO::FETCH_ASSOC)["id"]; // created_by seuraavaan vaiheeseen
+
+        // Lisätään tehtävän nimi, deadline ja projekti
+        $sql = "INSERT INTO task (task_name, due_date, project_id, created_by) VALUES (?, ?, ?, ?);";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_name, PDO::PARAM_STR);
+        $statement->bindParam(2, $due_date, PDO::PARAM_STR);
+        $statement->bindParam(3, $project_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $created_by, PDO::PARAM_INT);
+        $statement->execute();
+        $task_id = $pdo->lastInsertId(); // task_id seuraavaan vaiheeseen
+
+        // Tarkistetaan onko tehtävään liitetty henkilöitä
+        // Haetaan kaikki henkilöt ja loopataan läpi
+        $people = getPerson();
+        foreach ($people as $person) {
+            // Jos henkilö vastaava checkbox on checked, lisätään tehtävärivi task_persons-tauluun
+            $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-henkilot.php) namea vastaavan muuttuja luominen
+            if (isset($_POST[$checkboxname])) {
+                $sql = "INSERT INTO task_persons (task_id, person_id) VALUES (?, ?);";
+                $statement = $pdo->prepare($sql);
+                $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+                $statement->bindParam(2, $person["id"], PDO::PARAM_INT);
+                $statement->execute();
+            }
+        }
+
+        // Lisätään tehtävän luominen task_history-tauluun
+        $action_id = 1; // asetetaan toiminnaksi päivitys
+
+        $sql = "INSERT INTO task_history (task_id, updated_by, action_id, old_name, old_project, old_due) VALUES (?, ?, ?, ?, ?, ?);";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $created_by, PDO::PARAM_INT);
+        $statement->bindParam(3, $action_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $task_name, PDO::PARAM_STR);
+        $statement->bindParam(5, $project_id, PDO::PARAM_STR);
+        $statement->bindParam(6, $due_date, PDO::PARAM_STR);
+        $statement->execute();
+
+        $pdo->commit();
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
+}
+
+/**
+ * Tarkistaa onko käyttäjä kirjautunut sisään
+ */
+function checkIfLoggedIn()
+{
+    if (!isset($_SESSION["username"])) {
+        throw new Exception("Sinun täytyy kirjautua sisään käyttääksesi kaikkia toimintoja.");
     }
 }

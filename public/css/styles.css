@@ -1,14 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;600&display=swap');
+
 body {
     min-height: 100vh;
+    width: 100%;
     display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
     gap: 1em;
     margin: 0;
-    justify-content: center;
-    align-items: center;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
 }
 
 header {
-    justify-self: center;
+    text-align: center;
 }
 
 nav > ul {
@@ -18,28 +22,140 @@ nav > ul {
     justify-content: center;
 }
 
+main {
+    justify-self: center;
+    margin-top: 1em;
+    min-width: 50vw;
+    max-width: 900px;
+}
+
 footer {
-    border: 1px solid #bbb;
     padding: .5em;
+    text-align: center;
+    background-color: #bbb;
+}
+
+/* TYPOGRAFIA */
+
+a {
+    color: rgb(26, 121, 211);
+}
+
+a:hover {
+    color: rgb(167, 167, 167);
+}
+
+h2 {
+    font-weight: 300;
+    font-size: 1.8rem;
+    border-bottom: 1px solid #bbb;
+}
+
+h3 {
+    font-weight: 400;
+    font-size: 1.4rem;
+}
+
+.alert {
+    margin: 1em 0;
+    border: 2px dashed;
+    padding: 1em;
+    font-family: 'Roboto Slab', Georgia, 'Times New Roman', Times, serif;
+}
+
+.alert-success {
+    border-color: green;
+    background-color: rgb(227, 245, 227);
+}
+
+.alert-fail {
+    border-color: red;
+    background-color: rgb(255, 224, 224);
+}
+
+/* FORMIT */
+
+label {
+    padding: .25em 0;
+}
+
+input, button, select, option {
+    padding: .25em .5em;
+    font-size: 1rem;
+    font-family: 'Roboto Condensed';
+}
+
+input[type=submit], button {
+    cursor: pointer;
+}
+
+form, .register-toggle {
+    display: grid;
+    gap: 1em;
+}
+
+form > div, .register-toggle > div {
+    display: grid;
+    justify-self: start;
+}
+
+form input[type=submit] {
+    justify-self: start;
+}
+
+.register-toggle button[type=submit] { margin-top: 1em; }
+
+form .alert {
+    display: block;
+}
+
+/* TAULUKOT */
+
+table {
+    text-align: left;
+}
+
+table th, table td {
+    padding: .5em;
+    border: 1px solid #bbb;
+}
+
+table th {
+    background: #eee;
+    font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
+}
+
+table ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 /* TEHTÄVÄLISTA */
 
-.task-table {
-    text-align: left;
+table.task-table {
+    width: 100%;
 }
 
-.task-table th, .task-table td {
-    padding: .5em;
-    border: 1px solid #bbb;
+td.task-edit, th.task-edit {
+    text-align: right;
 }
 
-.task-table th {
-    background: #eee;
+td.task-edit input[type=submit] {
+    justify-self: end;
 }
 
-.task-table ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+td.task-edit input[type=submit]:first-child {
+    margin-bottom: .3rem;
+}
+
+ul.task-list > li {
+    margin: 1em 0;
+}
+
+/* ----- */
+
+.hidden {
+    display: none;
+    visibility: hidden;
 }
