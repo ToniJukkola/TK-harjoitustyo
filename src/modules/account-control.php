@@ -87,3 +87,14 @@ function findUserByEmail($email) {
         throw $e;
     }
 }
+
+/**
+ * Tarkistaa onko käyttäjä kirjautunut sisään
+ */
+function checkIfLoggedIn()
+{
+    if (!isset($_SESSION["username"])) {
+        throw new Exception("Sinun täytyy kirjautua sisään.");
+    }
+}
+
