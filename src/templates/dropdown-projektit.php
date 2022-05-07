@@ -1,9 +1,9 @@
 <?php
 function createProjectsDropdown($project_id = -1)
 {
-  require_once(MODULES_DIR . "projektit.php");
+  require_once(MODULES_DIR . "tehtavat.php");
 
-  $projects = getProjects();
+  $projects = getProjectsForTask();
 
   echo '<select name="project">';
   if ($project_id < 0) {

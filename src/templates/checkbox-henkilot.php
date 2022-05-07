@@ -1,10 +1,10 @@
 <?php
 function createPeopleCheckboxList($taskpeople = NULL)
 {
-  require_once(MODULES_DIR . "tyypit.php");
+  require_once(MODULES_DIR . "tehtavat.php");
 
   // Haetaan tyyppit taulukkoon
-  $people = getPerson();
+  $people = getPeopleForTask();
 
   // Tulostetaan lista 
   echo '<ul>';

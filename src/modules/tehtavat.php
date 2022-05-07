@@ -82,12 +82,52 @@ function getTaskPersonsRowByPersonAndTask($person_id, $task_id)
     }
 }
 
+/**
+ * Hakee kaikki projektit
+ */
+function getProjectsForTask()
+{
+    require_once CONFIG_DIR . 'dbconn.php';
+
+    try {
+        $pdo = connectToDatabase();
+        $sql = "SELECT * FROM project";
+        $projects = $pdo->query($sql);
+
+        return $projects->fetchAll();
+    } catch (PDOException $e) {
+        throw $e;
+    }
+}
+
+/**
+ * Hakee kaikki henkilöt
+ */
+function getPeopleForTask(){
+    require_once CONFIG_DIR.'dbconn.php';
+    
+    try{
+        $pdo = connectToDatabase();
+        // Create SQL query 
+        $sql = "SELECT * FROM person";
+        // Execute the query
+        $people = $pdo->query($sql);
+
+        return $people->fetchAll();
+    }catch(PDOException $e){
+        throw $e;
+    }
+
+}
+
+
 /** 
  * Poistaa tehtävän
  */
 function deleteTask($task_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
+    require_once MODULES_DIR . 'account-control.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
     checkIfLoggedIn();
@@ -150,7 +190,7 @@ function deleteTask($task_id)
 function editTask($task_id, $task_name, $due_date, $project_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
-    require_once MODULES_DIR . 'tyypit.php';
+    require_once MODULES_DIR . 'account-control.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
     checkIfLoggedIn();
@@ -186,7 +226,7 @@ function editTask($task_id, $task_name, $due_date, $project_id)
         $statement->execute();
 
         // Haetaan kaikki henkilöt ja loopataan läpi
-        $people = getPerson();
+        $people = getPeopleForTask();
         foreach ($people as $person) {
             // Jos henkilö vastaava checkbox ei ole checked -> poistetaan henkilöä vastaava tehtävärivi task_personsista
             $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-henkilot.php) namea vastaavan muuttuja luominen
@@ -262,8 +302,7 @@ function editTask($task_id, $task_name, $due_date, $project_id)
 function addTask($task_name, $due_date, $project_id)
 {
     require_once CONFIG_DIR . 'dbconn.php';
-    require_once MODULES_DIR . 'projektit.php';
-    require_once MODULES_DIR . 'tyypit.php';
+    require_once MODULES_DIR . 'account-control.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
     checkIfLoggedIn();
@@ -305,7 +344,7 @@ function addTask($task_name, $due_date, $project_id)
 
         // Tarkistetaan onko tehtävään liitetty henkilöitä
         // Haetaan kaikki henkilöt ja loopataan läpi
-        $people = getPerson();
+        $people = getPeopleForTask();
         foreach ($people as $person) {
             // Jos henkilö vastaava checkbox on checked, lisätään tehtävärivi task_persons-tauluun
             $checkboxname = "person" . $person["id"]; // loopilla lomakkeelle tuotetun checkboxin (templates/checkbox-henkilot.php) namea vastaavan muuttuja luominen
@@ -335,15 +374,5 @@ function addTask($task_name, $due_date, $project_id)
     } catch (PDOException $e) {
         $pdo->rollBack();
         throw $e;
-    }
-}
-
-/**
- * Tarkistaa onko käyttäjä kirjautunut sisään
- */
-function checkIfLoggedIn()
-{
-    if (!isset($_SESSION["username"])) {
-        throw new Exception("Sinun täytyy kirjautua sisään käyttääksesi kaikkia toimintoja.");
     }
 }
