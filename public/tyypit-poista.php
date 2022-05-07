@@ -27,6 +27,11 @@ if (isset($_GET["person_id"])) {
           echo '<div class="alert alert-success">';
           echo "Poistettu henkilö #" . $person_id . " ";
           echo '</div>';
+          if($person[0]["username"] == $_SESSION["username"]) {
+            include_once MODULES_DIR.'account-control.php';
+            logout();
+            echo '<div class="alert">Poistettu käyttäjä kirjattu ulos</div>';
+          }
         } catch (Exception $pdoex) {
           echo '<div class="alert alert-fail">' . $pdoex->getMessage() . '</div>';
         }
