@@ -276,12 +276,20 @@ function addTask($task_name, $due_date, $project_id)
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
 
+        // Haetaan lisääjä
+        $sql = "SELECT id FROM person WHERE username = ?;";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $_SESSION["username"]);
+        $statement->execute();
+        $created_by = $statement->fetch(PDO::FETCH_ASSOC)["id"]; // created_by seuraavaan vaiheeseen
+
         // Lisätään tehtävän nimi, deadline ja projekti
-        $sql = "INSERT INTO task (task_name, due_date, project_id) VALUES (?, ?, ?);";
+        $sql = "INSERT INTO task (task_name, due_date, project_id, created_by) VALUES (?, ?, ?, ?);";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_name, PDO::PARAM_STR);
         $statement->bindParam(2, $due_date, PDO::PARAM_STR);
         $statement->bindParam(3, $project_id, PDO::PARAM_INT);
+        $statement->bindParam(4, $created_by, PDO::PARAM_INT);
         $statement->execute();
         $task_id = $pdo->lastInsertId(); // task_id seuraavaan vaiheeseen
 
