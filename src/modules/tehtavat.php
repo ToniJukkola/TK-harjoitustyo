@@ -137,9 +137,6 @@ function deleteTask($task_id)
         throw new Exception("Virhe poistettavan tehtävän id:n noutamisessa.");
     }
 
-    // Haetaan vanha data talteen
-    $old_data = getSingleTask($task_id);
-
     try {
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
@@ -154,27 +151,6 @@ function deleteTask($task_id)
         $sql = "DELETE FROM task WHERE id = ?";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_id, PDO::PARAM_INT);
-        $statement->execute();
-
-        // Lisätään tehtävän poisto task_update-tauluun
-        $action_id = 2; // asetetaan toiminnaksi poisto
-
-        // Haetaan poistajan id
-        $sql = "SELECT id FROM person WHERE email = ?;";
-        $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $_SESSION["username"]);
-        $statement->execute();
-        $deleted_by = $statement->fetch(PDO::FETCH_ASSOC)["id"]; // deleted_by seuraavaan vaiheeseen
-
-        $sql = "INSERT INTO task_history (task_id, updated_by, action_id, old_name, old_project, old_due, old_finished) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
-        $statement->bindParam(2, $deleted_by, PDO::PARAM_INT);
-        $statement->bindParam(3, $action_id, PDO::PARAM_INT);
-        $statement->bindParam(4, $old_data["task_name"], PDO::PARAM_STR);
-        $statement->bindParam(5, $old_data["project_id"], PDO::PARAM_STR);
-        $statement->bindParam(6, $old_data["due_date"], PDO::PARAM_STR);
-        $statement->bindParam(7, $old_data["date_finished"]);
         $statement->execute();
 
         $pdo->commit();
@@ -207,9 +183,6 @@ function editTask($task_id, $task_name, $due_date, $project_id)
         <ol>
         <li>nimi</li><li>deadline</li><li>projekti, johon tehtävä liittyy</li></ol>");
     }
-
-    // Haetaan vanha data talteen
-    $old_data = getSingleTask($task_id);
 
     try {
         $pdo = connectToDatabase();
@@ -269,28 +242,6 @@ function editTask($task_id, $task_name, $due_date, $project_id)
             $statement->bindParam(1, $task_id, PDO::PARAM_INT);
             $statement->execute();
         }
-
-        // Lisätään tehtävän päivitys task_history-tauluun
-        $action_id = 3; // asetetaan toiminnaksi päivitys
-
-        // Haetaan päivittäjän id
-        $sql = "SELECT id FROM person WHERE email = ?;";
-        $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $_SESSION["username"]);
-        $statement->execute();
-        $updated_by = $statement->fetch(PDO::FETCH_ASSOC)["id"]; // udpdated_by seuraavaan vaiheeseen
-
-        // Lisätään task_history-tauluun
-        $sql = "INSERT INTO task_history (task_id, updated_by, action_id, old_name, old_project, old_due, old_finished) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
-        $statement->bindParam(2, $updated_by, PDO::PARAM_INT);
-        $statement->bindParam(3, $action_id, PDO::PARAM_INT);
-        $statement->bindParam(4, $old_data["task_name"], PDO::PARAM_STR);
-        $statement->bindParam(5, $old_data["project_id"], PDO::PARAM_STR);
-        $statement->bindParam(6, $old_data["due_date"], PDO::PARAM_STR);
-        $statement->bindParam(7, $old_data["date_finished"]);
-        $statement->execute();
     } catch (PDOException $e) {
         throw $e;
     }
@@ -325,20 +276,12 @@ function addTask($task_name, $due_date, $project_id)
         $pdo = connectToDatabase();
         $pdo->beginTransaction();
 
-        // Haetaan lisääjä
-        $sql = "SELECT id FROM person WHERE email = ?;";
-        $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $_SESSION["username"]);
-        $statement->execute();
-        $created_by = $statement->fetch(PDO::FETCH_ASSOC)["id"]; // created_by seuraavaan vaiheeseen
-
         // Lisätään tehtävän nimi, deadline ja projekti
-        $sql = "INSERT INTO task (task_name, due_date, project_id, created_by) VALUES (?, ?, ?, ?);";
+        $sql = "INSERT INTO task (task_name, due_date, project_id) VALUES (?, ?, ?);";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $task_name, PDO::PARAM_STR);
         $statement->bindParam(2, $due_date, PDO::PARAM_STR);
         $statement->bindParam(3, $project_id, PDO::PARAM_INT);
-        $statement->bindParam(4, $created_by, PDO::PARAM_INT);
         $statement->execute();
         $task_id = $pdo->lastInsertId(); // task_id seuraavaan vaiheeseen
 
@@ -356,19 +299,6 @@ function addTask($task_name, $due_date, $project_id)
                 $statement->execute();
             }
         }
-
-        // Lisätään tehtävän luominen task_history-tauluun
-        $action_id = 1; // asetetaan toiminnaksi päivitys
-
-        $sql = "INSERT INTO task_history (task_id, updated_by, action_id, old_name, old_project, old_due) VALUES (?, ?, ?, ?, ?, ?);";
-        $statement = $pdo->prepare($sql);
-        $statement->bindParam(1, $task_id, PDO::PARAM_INT);
-        $statement->bindParam(2, $created_by, PDO::PARAM_INT);
-        $statement->bindParam(3, $action_id, PDO::PARAM_INT);
-        $statement->bindParam(4, $task_name, PDO::PARAM_STR);
-        $statement->bindParam(5, $project_id, PDO::PARAM_STR);
-        $statement->bindParam(6, $due_date, PDO::PARAM_STR);
-        $statement->execute();
 
         $pdo->commit();
     } catch (PDOException $e) {

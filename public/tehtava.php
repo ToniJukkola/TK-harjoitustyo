@@ -58,10 +58,6 @@ require_once(MODULES_DIR . "tehtavat.php");
           <th>Lisätty</th>
           <td><?php echo $task["date_created_local"]; ?></td>
         </tr>
-        <tr>
-          <th>Lisääjä</th>
-          <td><?php echo $task["creator_firstname"] . ' ' . $task["creator_lastname"]; ?></td>
-        </tr>
       </tbody>
     </table>
 
