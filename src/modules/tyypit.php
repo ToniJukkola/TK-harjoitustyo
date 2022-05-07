@@ -41,6 +41,7 @@ function addPerson($username, $email, $firstname, $lastname) {
 
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'tyypit.php';
+    require_once MODULES_DIR . 'account-control.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
     checkIfLoggedIn();
@@ -75,6 +76,7 @@ function deletePerson($person_id) {
 
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'tyypit.php';
+    require_once MODULES_DIR . 'account-control.php';
 
     // Tarkistetaan, että käyttäjä on kirjautunut
       checkIfLoggedIn();
@@ -95,12 +97,5 @@ function deletePerson($person_id) {
        
     } catch (PDOException $e) {
         throw $e;
-    }
-}
-
-function checkIfLoggedIn()
-{
-    if (!isset($_SESSION["username"])) {
-        throw new Exception("Sinun täytyy kirjautua sisään.");
     }
 }
