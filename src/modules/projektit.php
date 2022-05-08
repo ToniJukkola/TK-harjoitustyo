@@ -69,10 +69,10 @@ function deleteProject($project_id) {
     require_once CONFIG_DIR . 'dbconn.php';
     require_once MODULES_DIR . 'account-control.php';
 
-    // Tarkistetaan, että käyttäjä on kirjautunut
+
       checkIfLoggedIn();
 
-    // Tarkistetaan että henkilön id on tiedossa
+    
     if (!isset($project_id)) {
         throw new Exception("Virhe virhe virhe virhe!!! ei projektiaaaaa");
     }
@@ -80,12 +80,24 @@ function deleteProject($project_id) {
     try {
         $pdo = connectToDatabase();
         
-        // Poistetaan person-taulusta
+
+        //poistetaan yhteys task-taulusta
+        $sql = "DELETE task_persons
+         FROM task_persons 
+         LEFT JOIN task ON task_persons.task_id = task.id
+          WHERE task.project_id = ?";
+          
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $project_id, PDO::PARAM_INT);
+        $statement->execute();
+
+        //poisto projekti-taulusta
         $sql = "DELETE FROM project WHERE project.id = ?";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $project_id, PDO::PARAM_INT);
         $statement->execute();
        
+        
     } catch (PDOException $e) {
         throw $e;
     }
