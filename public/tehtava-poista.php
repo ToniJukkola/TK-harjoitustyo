@@ -31,7 +31,7 @@ $task = getSingleTask($task_id);
         }
       }
     } else {
-      echo '<div class="alert alert-fail">Valitsemaasi tehtävää ei löydy tietokannasta.</div>';
+      echo '<div class="alert alert-fail">Valitsemaasi projektia ei löydy.</div>';
     }
   }
   ?>

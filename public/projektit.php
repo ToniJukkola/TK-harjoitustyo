@@ -8,7 +8,8 @@ echo "<h2> PROJEKTIT </h2>";
 $projects = getProjects();
 echo "<ul>";
 foreach($projects as $p){
-    echo "<li>".$p["id"]." ".$p["project_name"]."</li>";
+    echo "<li>".$p["id"]." ".$p["project_name"].
+    "<a href='projektit-poista.php?id=".$p["id"]."'>Poista</a></li>";
 }
 echo "</ul>";
 
