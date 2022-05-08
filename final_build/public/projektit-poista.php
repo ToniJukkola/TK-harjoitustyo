@@ -2,8 +2,8 @@
 include_once TEMPLATES_DIR.'head.php';
 include_once MODULES_DIR.'projektit.php';
 
-if (isset($_GET["project_id"])){
-    $project_id = $_GET["project_id"];
+if (isset($_GET["id"])){
+    $project_id = $_GET["id"];
     $project = getSingleProject($project_id);
 }
 ?>
@@ -19,7 +19,7 @@ if (!isset($_SESSION["username"])) {
           try {
             deleteProject($project_id);
             echo '<div class="alert alert-success">';
-            echo "Poistettu projekti #" . $project_id . " ". $project["project_name"];
+            echo "Poistettu projekti #" . $project_id;
             echo '</div>';
           } catch (Exception $pdoex) {
             echo '<div class="alert alert-fail">' . $pdoex->getMessage() . '</div>';
