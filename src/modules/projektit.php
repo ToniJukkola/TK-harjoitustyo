@@ -84,9 +84,14 @@ function deleteProject($project_id) {
         //poistetaan yhteys task-taulusta
         $sql = "DELETE task_persons
          FROM task_persons 
-         LEFT JOIN task ON task_persons.task_id = task.id
+         LEFT JOIN task ON  task.id = task_persons.task_id 
           WHERE task.project_id = ?";
-          
+
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $project_id, PDO::PARAM_INT);
+        $statement->execute();
+
+        $sql = "DELETE FROM task WHERE project_id = ?";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(1, $project_id, PDO::PARAM_INT);
         $statement->execute();
