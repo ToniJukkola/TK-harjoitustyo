@@ -19,9 +19,9 @@ if (!isset($_SESSION["username"])) {
     echo '<div>
     <a href="projektit-uusi.php"><button>Lisää projekti</button></a>
 </div>';
-echo "</main>";
-
 
 }
+
+echo "</main>";
 
 include_once TEMPLATES_DIR.'foot.php';
