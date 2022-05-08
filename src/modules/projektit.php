@@ -43,3 +43,50 @@ function addProject($project_name){
         throw $e;
     }
 }
+//yhden projektin haku
+function getSingleProject($project_id){
+    require_once CONFIG_DIR.'dbconn.php';
+
+    try{
+        $pdo = connectToDatabase();
+        // Create SQL query 
+        $sql = "SELECT project.id AS project_id, project_name FROM project 
+        WHERE project.id = ?";
+        // Execute the query
+        $project = $pdo->prepare($sql);
+        $project->bindParam(1, $project_id, PDO::PARAM_INT);
+        $project->execute();
+
+        return $project->fetchAll();
+    }catch(PDOException $e){
+        throw $e;
+    }
+
+}
+//projketin poisto
+function deleteProject($project_id) {
+
+    require_once CONFIG_DIR . 'dbconn.php';
+    require_once MODULES_DIR . 'account-control.php';
+
+    // Tarkistetaan, että käyttäjä on kirjautunut
+      checkIfLoggedIn();
+
+    // Tarkistetaan että henkilön id on tiedossa
+    if (!isset($project_id)) {
+        throw new Exception("Virhe virhe virhe virhe!!! ei projektiaaaaa");
+    }
+
+    try {
+        $pdo = connectToDatabase();
+        
+        // Poistetaan person-taulusta
+        $sql = "DELETE FROM project WHERE project.id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(1, $project_id, PDO::PARAM_INT);
+        $statement->execute();
+       
+    } catch (PDOException $e) {
+        throw $e;
+    }
+}
